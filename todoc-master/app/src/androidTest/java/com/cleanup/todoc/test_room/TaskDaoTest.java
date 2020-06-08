@@ -75,7 +75,7 @@ import static org.junit.Assert.assertTrue;
             this.database.taskDao().inset_Task(TASK_DEMO1);
 
             // TEST
-            Task task = this.database.taskDao().getTask(TASK_ID1);
+            Task task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
             assertTrue(task.getName().equals(TASK_DEMO1.getName()) && task.getName().equals(TASK_DEMO1.getName()));
         }
 
@@ -86,11 +86,11 @@ import static org.junit.Assert.assertTrue;
             this.database.taskDao().inset_Task(TASK_DEMO1);
 
             // TEST
-            Task task = this.database.taskDao().getTask(TASK_ID1);
+            Task task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
             assertTrue(task.getName().equals(TASK_DEMO1.getName()) && task.getId()==(TASK_DEMO1.getId()));
 
             this.database.taskDao().update_Task(TASK_DEMO1_UPDATE);
-            task = this.database.taskDao().getTask(TASK_ID1);
+            task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
             assertTrue(!task.getName().equals(TASK_DEMO1.getName()) && task.getId() == TASK_DEMO1.getId());
         }
 
@@ -101,12 +101,12 @@ import static org.junit.Assert.assertTrue;
             this.database.taskDao().inset_Task(TASK_DEMO1);
 
             // TEST
-            Task task = this.database.taskDao().getTask(TASK_ID1);
+            Task task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
             assertTrue(task.getName().equals(TASK_DEMO1.getName()) && task.getId()==(TASK_DEMO1.getId()));
 
             this.database.taskDao().delete_Task(TASK_ID1);
 
-            task = this.database.taskDao().getTask(TASK_ID1);
+            task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
             assertNull(task);
         }
     }

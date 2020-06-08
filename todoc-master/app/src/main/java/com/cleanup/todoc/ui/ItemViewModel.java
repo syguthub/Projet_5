@@ -3,6 +3,7 @@ package com.cleanup.todoc.ui;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectDaoRepository;
 import com.cleanup.todoc.repository.TaskDaoRepository;
@@ -17,7 +18,7 @@ public class ItemViewModel extends ViewModel {
     private final Executor executor;
 
 
-    private LiveData<Task> current_Task;
+    private LiveData<List<Task>> current_Tasks;
 
     public ItemViewModel(TaskDaoRepository taskDaoSource, ProjectDaoRepository projectDaoSource, Executor executor) {
         this.taskDaoSource = taskDaoSource;
@@ -25,11 +26,24 @@ public class ItemViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    public void init(long taskId){
-        if (this.current_Task != null){
+    public void init(List<Task> tasks){
+        if (this.current_Tasks != null){
             return;
         }
-        current_Task = this.taskDaoSource.getTask(taskId);
+        current_Tasks = this.taskDaoSource.getTasks();
+    }
+
+
+    public void Create_All_Project(Project[] Project){
+        executor.execute( ()-> this.projectDaoSource.Create_All_Project(Project) );
+    }
+
+    public void Create_Project(Project project){
+        executor.execute( ()-> this.projectDaoSource.Create_Project(project) );
+    }
+
+    public void inset_Task (Task task){
+        executor.execute( ()-> this.taskDaoSource.inset_Task(task) );
     }
 
     public LiveData<List<Task>> getTasks(){
@@ -40,12 +54,12 @@ public class ItemViewModel extends ViewModel {
         return this.taskDaoSource.getTask(Id);
     }
 
-    public void inset_Task (Task task){
-        executor.execute( ()-> this.taskDaoSource.inset_Task(task) );
-    }
-
     public void update_Task(Task task){
         executor.execute( ()-> this.taskDaoSource.update_Task(task) );
+    }
+
+    public void update_Tasks(List<Task> tasks){
+        executor.execute( ()-> this.taskDaoSource.update_Tasks(tasks) );
     }
 
     public void delete_Task(long taskId){

@@ -1,5 +1,8 @@
 package com.cleanup.todoc.ui;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +20,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.cleanup.todoc.Injections.Injection;
+import com.cleanup.todoc.Injections.ViewModelFactory;
 import com.cleanup.todoc.dataBase.SaveMyTripDataBase;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
@@ -25,6 +30,7 @@ import com.cleanup.todoc.model.Task;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * List of all current tasks of the application
      */
     @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private  ArrayList<Task> tasks = new ArrayList<>();
 
     /**
      * The adapter which handles the list of tasks
@@ -89,13 +95,38 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
-    SaveMyTripDataBase mDataBase;
+    ItemViewModel itemViewModel;
+    ViewModelFactory viewModelFactory;
+    private void ItemViewModel_manager(){
+        viewModelFactory= Injection.provide_View_Model_Factory(this);
+        itemViewModel= ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel.class);
+        itemViewModel.Create_All_Project(Project.getAllProjects());
+        itemViewModel.init(tasks);
+
+    }
+
+//    private void get_Current_Tasks(){
+//        this.itemViewModel.getTasks().observe(this,this::updateTasks);
+//    }
+//
+    private void get_Tasks(){
+        this.itemViewModel.getTasks().observe(this,this::g_Tasks);
+    }
+
+    private void g_Tasks(List<Task> tasks){
+        this.itemViewModel.update_Tasks(tasks);
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        ItemViewModel_manager();
+        get_Tasks();
+//        get_Current_Tasks();
 
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
@@ -137,8 +168,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
-//        mDataBase.taskDao().delete_Task(task.getId());
+        itemViewModel.delete_Task(task.getId());
         updateTasks();
     }
 
@@ -177,8 +207,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 );
 
                 addTask(task);
-//                mDataBase.taskDao().inset_Task(task);
-
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
@@ -212,7 +240,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
+        itemViewModel.inset_Task(task);
+
         updateTasks();
     }
 
@@ -220,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
+        get_Tasks();
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
@@ -242,7 +272,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
             }
             adapter.updateTasks(tasks);
-//            adapter.updateTasks(mDataBase.taskDao().getTasks());
         }
     }
 

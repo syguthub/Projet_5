@@ -14,6 +14,8 @@ import com.cleanup.todoc.dataBase.dao.TaskDao;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
+import java.util.Date;
+
 @Database(entities = {Task.class, Project.class},version = 1,exportSchema = false)
 public abstract class SaveMyTripDataBase extends RoomDatabase {
 
@@ -46,10 +48,10 @@ public abstract class SaveMyTripDataBase extends RoomDatabase {
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("id",1);
-                contentValues.put("username","Phylippe");
-                contentValues.put("urlPicture","https://oc-user.imgix.net/" +
-                        "users/avatars/15175844164713_frame_523.jpg?auto=compress,format&q=80&h=100&dpr=2");
-                db.insert("User", OnConflictStrategy.IGNORE,contentValues);
+                contentValues.put("ProjectId",3L);
+                contentValues.put("name","test");
+                contentValues.put("creationTimestamp",new Date().getTime());
+                db.insert("Task", OnConflictStrategy.IGNORE,contentValues);
             }
         };
     }

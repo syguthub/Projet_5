@@ -31,6 +31,10 @@ public class TaskDaoRepository {
         this.taskDao.update_Task(task);
     }
 
+    public void update_Tasks(List<Task> tasks){
+        this.taskDao.update_Tasks(tasks);
+    }
+
     public void delete_Task(long taskId){
         this.taskDao.delete_Task(taskId);
     }
