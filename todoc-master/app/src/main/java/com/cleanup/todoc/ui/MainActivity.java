@@ -1,7 +1,5 @@
 package com.cleanup.todoc.ui;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -22,13 +20,11 @@ import android.widget.TextView;
 
 import com.cleanup.todoc.Injections.Injection;
 import com.cleanup.todoc.Injections.ViewModelFactory;
-import com.cleanup.todoc.dataBase.SaveMyTripDataBase;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -87,6 +83,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private RecyclerView listTasks;
 
+    @Override
+    protected void onResume() {
+        get_Tasks();
+        super.onResume();
+    }
+
     /**
      * The TextView displaying the empty state
      */
@@ -95,28 +97,47 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
-    ItemViewModel itemViewModel;
-    ViewModelFactory viewModelFactory;
+    private ItemViewModel itemViewModel;
+
+
     private void ItemViewModel_manager(){
-        viewModelFactory= Injection.provide_View_Model_Factory(this);
+        ViewModelFactory viewModelFactory = Injection.provide_View_Model_Factory(this);
         itemViewModel= ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel.class);
         itemViewModel.Create_All_Project(Project.getAllProjects());
         itemViewModel.init(tasks);
 
     }
 
-//    private void get_Current_Tasks(){
-//        this.itemViewModel.getTasks().observe(this,this::updateTasks);
-//    }
-//
     private void get_Tasks(){
-        this.itemViewModel.getTasks().observe(this,this::g_Tasks);
+        select_Oder_Task();
+        }
+
+    private void select_Oder_Task() {
+        switch (sortMethod) {
+            case ALPHABETICAL:
+                this.itemViewModel.getTasksOderAlphabetical().observe(this,this::g_Tasks);;
+                break;
+            case ALPHABETICAL_INVERTED:
+                this.itemViewModel.getTasksOderAlphabeticalInverse().observe(this,this::g_Tasks);
+                break;
+            case RECENT_FIRST:
+                this.itemViewModel.getTasksOderRecentFirst().observe(this,this::g_Tasks);
+                break;
+            case OLD_FIRST:
+                this.itemViewModel.getTasksOldFirst().observe(this,this::g_Tasks);
+                break;
+            case NONE:
+                this.itemViewModel.getTasks().observe(this,this::g_Tasks);
+                break;
     }
+}
 
     private void g_Tasks(List<Task> tasks){
-        this.itemViewModel.update_Tasks(tasks);
+        visibility_Tasks();
+        this.tasks= (ArrayList<Task>) tasks;
+        adapter.updateTasks(this.tasks);
+        listTasks.setAdapter(adapter);
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         ItemViewModel_manager();
         get_Tasks();
-//        get_Current_Tasks();
 
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
@@ -162,14 +182,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
-        updateTasks();
+        get_Tasks();
+        visibility_Tasks();
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDeleteTask(Task task) {
         itemViewModel.delete_Task(task.getId());
-        updateTasks();
     }
 
     /**
@@ -241,39 +262,21 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private void addTask(@NonNull Task task) {
         itemViewModel.inset_Task(task);
-
-        updateTasks();
     }
 
     /**
      * Updates the list of tasks in the UI
      */
-    private void updateTasks() {
-        get_Tasks();
-        if (tasks.size() == 0) {
-            lblNoTasks.setVisibility(View.VISIBLE);
-            listTasks.setVisibility(View.GONE);
-        } else {
-            lblNoTasks.setVisibility(View.GONE);
-            listTasks.setVisibility(View.VISIBLE);
-            switch (sortMethod) {
-                case ALPHABETICAL:
-                    Collections.sort(tasks, new Task.TaskAZComparator());
-                    break;
-                case ALPHABETICAL_INVERTED:
-                    Collections.sort(tasks, new Task.TaskZAComparator());
-                    break;
-                case RECENT_FIRST:
-                    Collections.sort(tasks, new Task.TaskRecentComparator());
-                    break;
-                case OLD_FIRST:
-                    Collections.sort(tasks, new Task.TaskOldComparator());
-                    break;
 
+    private void visibility_Tasks() {
+            if (this.tasks.size() == 0) {
+                lblNoTasks.setVisibility(View.VISIBLE);
+                listTasks.setVisibility(View.GONE);
+            } else {
+                lblNoTasks.setVisibility(View.GONE);
+                listTasks.setVisibility(View.VISIBLE);
             }
-            adapter.updateTasks(tasks);
         }
-    }
 
     /**
      * Returns the dialog allowing the user to create a new task.

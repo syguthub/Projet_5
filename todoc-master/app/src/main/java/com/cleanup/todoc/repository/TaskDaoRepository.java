@@ -1,6 +1,7 @@
 package com.cleanup.todoc.repository;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Query;
 
 import com.cleanup.todoc.dataBase.dao.TaskDao;
 import com.cleanup.todoc.model.Task;
@@ -15,9 +16,28 @@ public class TaskDaoRepository {
         this.taskDao = taskDao;
     }
 
+
     public LiveData<List<Task>> getTasks(){
         return this.taskDao.getTasks();
     }
+
+    public LiveData<List<Task>> getTasksOderAlphabetical() {
+        return this.taskDao.getTasksOderAlphabetical();
+    }
+
+    public LiveData<List<Task>> getTasksOderAlphabeticalInverse() {
+        return this.taskDao.getTasksOderAlphabeticalInverse();
+    }
+
+    public LiveData<List<Task>> getTasksOderRecentFirst() {
+        return this.taskDao.getTasksOderRecentFirst();
+    }
+
+    public LiveData<List<Task>> getTasksRecentFirstInverse(){
+        return this.taskDao.getTasksRecentFirstInverse();
+    }
+
+
 
     public LiveData<Task> getTask(long Id){
         return this.taskDao.getTask(Id);
