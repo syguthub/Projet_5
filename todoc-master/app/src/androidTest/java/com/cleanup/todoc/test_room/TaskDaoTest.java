@@ -15,6 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,6 @@ import static org.junit.Assert.assertTrue;
 
         private static final int TASK_ID1 = 1;
         private static Task TASK_DEMO1 = new Task(TASK_ID1,PROJECT[0].getId(),"test1", new Date().getTime());
-        private static Task TASK_DEMO1_UPDATE = new Task(TASK_ID1,PROJECT[0].getId(),"test1 UPDATE", new Date().getTime());
 
         private static final int TASK_ID2 = 2;
         private static Task TASK_DEMO2 = new Task(TASK_ID2,PROJECT[2].getId(),"test2", new Date().getTime());
@@ -57,61 +57,23 @@ import static org.junit.Assert.assertTrue;
         private static Task TASK_DEMO3 = new Task(TASK_ID3,PROJECT[1].getId(),"test3", new Date().getTime());
 
         private static List<Task> LIST_TASK= Arrays.asList(TASK_DEMO1,TASK_DEMO2, TASK_DEMO3);
-        private static List<Task> LIST_UPDATE_TASK= Arrays.asList(TASK_DEMO3,TASK_DEMO2, TASK_DEMO1);
 
         @Test
         public void insert_Task_And_Get_Tasks_List() throws InterruptedException{
             // BEFORE : ADDING A NEW TASK
+            List<Task>tasks=new ArrayList<>();
+            tasks = LiveDataTestUtil.getValue(this.database.taskDao().get_Tasks());
+            assertEquals(0,tasks.size());
+
             this.database.projectDao().Create_All_Project(PROJECT);
             this.database.taskDao().inset_Task(TASK_DEMO1);
             this.database.taskDao().inset_Task(TASK_DEMO2);
             this.database.taskDao().inset_Task(TASK_DEMO3);
 
             // TEST
-            List<Task> tasks = LiveDataTestUtil.getValue(this.database.taskDao().getTasks());
+            tasks = LiveDataTestUtil.getValue(this.database.taskDao().get_Tasks());
             assertEquals(3, tasks.size());
-        }
-
-        @Test
-        public void insert_Task_And_Update_Tasks_List_Get_Tasks_List() throws InterruptedException{
-            // BEFORE : ADDING A NEW TASK
-            this.database.projectDao().Create_All_Project(PROJECT);
-            this.database.taskDao().inset_Task(TASK_DEMO1);
-            this.database.taskDao().inset_Task(TASK_DEMO2);
-            this.database.taskDao().inset_Task(TASK_DEMO3);
-
-            // TEST
-            List<Task> tasks = LiveDataTestUtil.getValue(this.database.taskDao().getTasks());
-            assertEquals(3, tasks.size());
-            this.database.taskDao().update_Tasks(LIST_UPDATE_TASK);
-            tasks = LiveDataTestUtil.getValue(this.database.taskDao().getTasks());
-
-        }
-
-        @Test
-        public void insert_And_Get_Task() throws InterruptedException{
-            // BEFORE : ADDING A NEW TASK
-            this.database.projectDao().Create_Project(PROJECT[0]);
-            this.database.taskDao().inset_Task(TASK_DEMO1);
-
-            // TEST
-            Task task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
-            assertTrue(task.getName().equals(TASK_DEMO1.getName()) && task.getName().equals(TASK_DEMO1.getName()));
-        }
-
-        @Test
-        public void insert_Task_And_Update_Task() throws InterruptedException{
-            // BEFORE : ADDING A NEW TASK
-            this.database.projectDao().Create_Project(PROJECT[0]);
-            this.database.taskDao().inset_Task(TASK_DEMO1);
-
-            // TEST
-            Task task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
-            assertTrue(task.getName().equals(TASK_DEMO1.getName()) && task.getId()==(TASK_DEMO1.getId()));
-
-            this.database.taskDao().update_Task(TASK_DEMO1_UPDATE);
-            task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
-            assertTrue(!task.getName().equals(TASK_DEMO1.getName()) && task.getId() == TASK_DEMO1.getId());
+            assertTrue(tasks.get(0).getName().equals(TASK_DEMO1.getName()) && tasks.get(0).getName().equals(TASK_DEMO1.getName()));
         }
 
         @Test
@@ -121,13 +83,13 @@ import static org.junit.Assert.assertTrue;
             this.database.taskDao().inset_Task(TASK_DEMO1);
 
             // TEST
-            Task task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
-            assertTrue(task.getName().equals(TASK_DEMO1.getName()) && task.getId()==(TASK_DEMO1.getId()));
+            List<Task> tasks = LiveDataTestUtil.getValue(this.database.taskDao().get_Tasks());
+            assertTrue(tasks.get(0).getName().equals(TASK_DEMO1.getName()) && tasks.get(0).getId()==(TASK_DEMO1.getId()));
 
             this.database.taskDao().delete_Task(TASK_ID1);
 
-            task = LiveDataTestUtil.getValue(this.database.taskDao().getTask(TASK_ID1));
-            assertNull(task);
+            tasks = LiveDataTestUtil.getValue(this.database.taskDao().get_Tasks());
+            assertEquals(0,tasks.size());
         }
     }
 

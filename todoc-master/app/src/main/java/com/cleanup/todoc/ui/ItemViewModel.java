@@ -11,20 +11,13 @@ import com.cleanup.todoc.repository.TaskDaoRepository;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import static com.cleanup.todoc.ui.MainActivity.sortMethod;
+
 public class ItemViewModel extends ViewModel {
 
     private final TaskDaoRepository taskDaoSource;
     private final ProjectDaoRepository projectDaoSource;
     private final Executor executor;
-
-
-    public LiveData<List<Task>> getCurrent_Tasks() {
-        return current_Tasks;
-    }
-
-    public void setCurrent_Tasks(LiveData<List<Task>> current_Tasks) {
-        this.current_Tasks = current_Tasks;
-    }
 
     private LiveData<List<Task>> current_Tasks;
 
@@ -34,14 +27,28 @@ public class ItemViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    public void init(List<Task> tasks){
+    public void init(){
         if (this.current_Tasks != null){
             return;
         }
-        current_Tasks = this.taskDaoSource.getTasks();
+        switch (sortMethod) {
+            case ALPHABETICAL:
+                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Alphabetical();
+                break;
+            case ALPHABETICAL_INVERTED:
+                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Alphabetical_Inverse();
+                break;
+            case RECENT_FIRST:
+                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Recent_First();
+                break;
+            case OLD_FIRST:
+                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Old_First();
+                break;
+            case NONE:
+                current_Tasks = this.taskDaoSource.get_Tasks();
+                break;
+        }
     }
-
-
 
 
     public void Create_All_Project(Project[] Project){
@@ -58,40 +65,25 @@ public class ItemViewModel extends ViewModel {
     }
 
 
-    public LiveData<List<Task>> getTasks(){
-        return this.taskDaoSource.getTasks();
+    public LiveData<List<Task>> get_Tasks(){
+        return this.taskDaoSource.get_Tasks();
     }
 
-    public LiveData<List<Task>> getTasksOderAlphabetical() {
-        return this.taskDaoSource.getTasksOderAlphabetical();
+    public LiveData<List<Task>> get_Tasks_Oder_Alphabetical() {
+        return this.taskDaoSource.get_Tasks_Oder_Alphabetical();
     }
 
-    public LiveData<List<Task>> getTasksOderAlphabeticalInverse() {
-        return this.taskDaoSource.getTasksOderAlphabeticalInverse();
+    public LiveData<List<Task>> get_Tasks_Oder_Alphabetical_Inverse() {
+        return this.taskDaoSource.get_Tasks_Oder_Alphabetical_Inverse();
     }
 
-    public LiveData<List<Task>> getTasksOderRecentFirst() {
-        return this.taskDaoSource.getTasksOderRecentFirst();
+    public LiveData<List<Task>> get_Tasks_Oder_Recent_First() {
+        return this.taskDaoSource.get_Tasks_Oder_Recent_First();
     }
 
-    public LiveData<List<Task>> getTasksOldFirst(){
-        return this.taskDaoSource.getTasksRecentFirstInverse();
+    public LiveData<List<Task>> get_Tasks_Oder_Old_First(){
+        return this.taskDaoSource.get_Tasks_Oder_Old_First();
     }
-
-
-    public LiveData<Task> getTask(long Id){
-        return this.taskDaoSource.getTask(Id);
-    }
-
-
-    public void update_Task(Task task){
-        executor.execute( ()-> this.taskDaoSource.update_Task(task) );
-    }
-
-    public void update_Tasks(List<Task> tasks){
-        executor.execute( ()-> this.taskDaoSource.update_Tasks(tasks) );
-    }
-
 
     public void delete_Task(long taskId){
         executor.execute( ()-> this.taskDaoSource.delete_Task(taskId) );

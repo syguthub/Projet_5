@@ -15,32 +15,23 @@ import java.util.List;
 public interface TaskDao {
 
     @Query( "SELECT*FROM Task" )
-    LiveData<List<Task>> getTasks();
+    LiveData<List<Task>> get_Tasks();
 
     @Query( "SELECT*FROM Task ORDER BY name " )
-    LiveData<List<Task>> getTasksOderAlphabetical();
+    LiveData<List<Task>> get_Tasks_Oder_Alphabetical();
 
     @Query( "SELECT*FROM Task ORDER BY name DESC" )
-    LiveData<List<Task>> getTasksOderAlphabeticalInverse();
+    LiveData<List<Task>> get_Tasks_Oder_Alphabetical_Inverse();
 
     @Query( "SELECT*FROM Task ORDER BY creationTimestamp" )
-    LiveData<List<Task>> getTasksOderRecentFirst();
+    LiveData<List<Task>> get_Tasks_Oder_Recent_First();
 
     @Query( "SELECT*FROM Task ORDER BY creationTimestamp DESC" )
-    LiveData<List<Task>> getTasksRecentFirstInverse();
+    LiveData<List<Task>> get_Tasks_Oder_Old_First();
 
-
-    @Query("SELECT*FROM Task WHERE id = :Id")
-    LiveData<Task> getTask(long Id);
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void inset_Task (Task task);
-
-    @Update
-    void update_Task(Task task);
-
-    @Update
-    void update_Tasks(List<Task> tasks);
 
     @Query("DELETE FROM Task WHERE id = :taskId")
     void delete_Task(long taskId);

@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * The sort method to be used to display tasks
      */
     @NonNull
-    private SortMethod sortMethod = SortMethod.NONE;
+    public static SortMethod sortMethod = SortMethod.NONE;
 
     /**
      * Dialog to create a new task
@@ -98,14 +98,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private TextView lblNoTasks;
 
     private ItemViewModel itemViewModel;
-
+//    String string="NONE";
 
     private void ItemViewModel_manager(){
         ViewModelFactory viewModelFactory = Injection.provide_View_Model_Factory(this);
-        itemViewModel= ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel.class);
-        itemViewModel.Create_All_Project(Project.getAllProjects());
-        itemViewModel.init(tasks);
-
+        this.itemViewModel= ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel.class);
+        this.itemViewModel.Create_All_Project(Project.getAllProjects());
+//        this.itemViewModel.init();
     }
 
     private void get_Tasks(){
@@ -115,19 +114,24 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void select_Oder_Task() {
         switch (sortMethod) {
             case ALPHABETICAL:
-                this.itemViewModel.getTasksOderAlphabetical().observe(this,this::g_Tasks);;
+                this.itemViewModel.get_Tasks_Oder_Alphabetical().observe(this,this::g_Tasks);;
+//                string="ALPHABETICAL";
                 break;
             case ALPHABETICAL_INVERTED:
-                this.itemViewModel.getTasksOderAlphabeticalInverse().observe(this,this::g_Tasks);
+                this.itemViewModel.get_Tasks_Oder_Alphabetical_Inverse().observe(this,this::g_Tasks);
+//                string= "ALPHABETICAL_INVERTED";
                 break;
             case RECENT_FIRST:
-                this.itemViewModel.getTasksOderRecentFirst().observe(this,this::g_Tasks);
+                this.itemViewModel.get_Tasks_Oder_Recent_First().observe(this,this::g_Tasks);
+//                string="RECENT_FIRST";
                 break;
             case OLD_FIRST:
-                this.itemViewModel.getTasksOldFirst().observe(this,this::g_Tasks);
+                this.itemViewModel.get_Tasks_Oder_Old_First().observe(this,this::g_Tasks);
+//                string="OLD_FIRST";
                 break;
             case NONE:
-                this.itemViewModel.getTasks().observe(this,this::g_Tasks);
+                this.itemViewModel.get_Tasks().observe(this,this::g_Tasks);
+//                string="NONE";
                 break;
     }
 }
@@ -335,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all possible sort methods for task
      */
-    private enum SortMethod {
+    public enum SortMethod {
         /**
          * Sort alphabetical by name
          */
