@@ -10,17 +10,26 @@ import com.athand.todoc.ui.ItemViewModel;
 
 import java.util.concurrent.Executor;
 
+/*
+THIS CLASS AND A CONSTRUCTOR.
+
+THANKS TO THE IMPLEMENTATION "ViewModelProvider.Factory",
+IT SIMPLIFIES THE CREATION OF LOBJET ItemViewModel
+*/
+
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private final TaskDaoRepository taskDaoSource;
     private final ProjectDaoRepository projectDaoSource;
     private final Executor executor;
 
+// CONSTRUCTOR _____________________________________________________________________________________
     public ViewModelFactory(TaskDaoRepository taskDaoSource, ProjectDaoRepository projectDaoSource, Executor executor) {
         this.taskDaoSource = taskDaoSource;
         this.projectDaoSource = projectDaoSource;
         this.executor = executor;
     }
 
+// RETURN CONSTRUCTED OBJECTS ______________________________________________________________________
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {

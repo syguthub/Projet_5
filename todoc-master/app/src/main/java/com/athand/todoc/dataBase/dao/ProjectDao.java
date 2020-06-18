@@ -10,19 +10,26 @@ import com.athand.todoc.model.Project;
 
 import java.util.List;
 
+/*
+INTERFACE DAO POUR LA GESTION DES ACCES AU DONEE DE TYPE Project DANS LA BASE DE DONNEE
+IL EFFECTUE LES REQUET SQL
+*/
 @Dao
 public interface ProjectDao {
 
-    @Insert( onConflict = OnConflictStrategy.REPLACE)
-    void Create_Project(Project project);
-
+// CREATE __________________________________________________________________________________________
     @Insert( onConflict = OnConflictStrategy.REPLACE)
     void Create_All_Project(Project[] Project);
 
-    @Query("SELECT*FROM Project WHERE id =:id" )
-    LiveData <Project> get_Project(long id);
+//FOR TEST ONLY ------------------------------------------------------------------------------------
+    @Insert( onConflict = OnConflictStrategy.REPLACE)
+    void Create_Project(Project project);
 
+// GET _____________________________________________________________________________________________
     @Query("SELECT*FROM Project" )
     LiveData <Project[]> get_All_Projects();
 
+//FOR TEST ONLY ------------------------------------------------------------------------------------
+    @Query("SELECT*FROM Project WHERE id =:id" )
+    LiveData <Project> get_Project(long id);
 }

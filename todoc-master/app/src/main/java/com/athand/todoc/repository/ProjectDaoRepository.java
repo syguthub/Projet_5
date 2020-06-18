@@ -7,6 +7,11 @@ import com.athand.todoc.model.Project;
 
 import java.util.List;
 
+/*
+THIS CLASS ALLOWS FOR INSTANCING THE INTERFACE ProjectDao
+
+ */
+
 public class ProjectDaoRepository {
 
     private final ProjectDao projectDao;
@@ -15,20 +20,24 @@ public class ProjectDaoRepository {
         this.projectDao = projectDao;
     }
 
-    public void Create_Project(Project project){
-        this.projectDao.Create_Project(project);
-    }
-
+// CREATE __________________________________________________________________________________________
     public void Create_All_Project(Project[] Project){
         this.projectDao.Create_All_Project(Project);
     }
 
-    public LiveData <Project> get_Project(long id){
-        return this.projectDao.get_Project(id);
+//FOR TEST ONLY ------------------------------------------------------------------------------------
+    public void Create_Project(Project project){
+        this.projectDao.Create_Project(project);
     }
 
+// GET _____________________________________________________________________________________________
     public LiveData <Project[]> get_All_Projects(){
         return this.projectDao.get_All_Projects();
+    }
+
+//FOR TEST ONLY ------------------------------------------------------------------------------------
+    public LiveData <Project> get_Project(long id){
+        return this.projectDao.get_Project(id);
     }
 
 }

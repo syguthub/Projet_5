@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private Project[] allProjects;//= Project.getAllProjects();
+    private Project[] allProjects;
 
     /**
      * List of all current tasks of the application
@@ -100,50 +100,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private ItemViewModel itemViewModel;
 //    String string="NONE";
 
-    private void ItemViewModel_manager(){
-        ViewModelFactory viewModelFactory = Injection.provide_View_Model_Factory(this);
-        this.itemViewModel= ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel.class);
-        this.itemViewModel.Create_All_Project(Project.getAllProjects());
-    }
-
-    private void get_Project(){
-        itemViewModel.get_All_Projects().observe(this,this::update_Project);
-    }
-
-    private void update_Project(Project[] project){
-        allProjects=project;
-    }
-
-
-    private void get_Tasks(){
-        select_Oder_Task();
-    }
-
-    private void select_Oder_Task() {
-        switch (sortMethod) {
-            case ALPHABETICAL:
-                this.itemViewModel.get_Tasks_Oder_Alphabetical().observe(this,this::update_Tasks);
-                break;
-            case ALPHABETICAL_INVERTED:
-                this.itemViewModel.get_Tasks_Oder_Alphabetical_Inverse().observe(this,this::update_Tasks);
-                break;
-            case RECENT_FIRST:
-                this.itemViewModel.get_Tasks_Oder_Recent_First().observe(this,this::update_Tasks);
-                break;
-            case OLD_FIRST:
-            case NONE:
-                this.itemViewModel.get_Tasks_Oder_Old_First().observe(this,this::update_Tasks);
-                break;
-        }
-}
-
-    private void update_Tasks(List<Task> tasks){
-        visibility_Tasks();
-        this.tasks= (ArrayList<Task>) tasks;
-        adapter.updateTasks(this.tasks);
-        listTasks.setAdapter(adapter);
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,6 +150,57 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     public void onDeleteTask(Task task) {
         itemViewModel.delete_Task(task.getId());
     }
+
+// CONFIGURATION OF ItemViewModel __________________________________________________________________
+    private void ItemViewModel_manager(){
+        ViewModelFactory viewModelFactory = Injection.provide_View_Model_Factory(this);
+        this.itemViewModel= ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel.class);
+// CREATION OF BASIC PROJECTS ----------------------------------------------------------------------
+        this.itemViewModel.Create_All_Project(Project.getAllProjects());
+    }
+
+// MANAGE PROJECT __________________________________________________________________________________
+// GET THE LIST OF PROS AND AUTOMATICALLY UPDATE EVERY CHANGE---------------------------------------
+    private void get_Project(){
+        itemViewModel.get_All_Projects().observe(this,this::update_Project);
+    }
+
+// METHOD THAT UPDATES allProjects -----------------------------------------------------------------
+    private void update_Project(Project[] project){
+        allProjects = project;
+    }
+
+// MANAGE TASK LIST DISPLAY ________________________________________________________________________
+    private void get_Tasks(){
+        select_Oder_Task();
+    }
+
+//SELECT THE TASK DISPLAY ORDER AND AUTOMATICALLY UPDATE IT EVERY CHANGE ---------------------------
+    private void select_Oder_Task() {
+        switch (sortMethod) {
+            case ALPHABETICAL:
+                this.itemViewModel.get_Tasks_Oder_Alphabetical().observe(this,this::update_Tasks);
+                break;
+            case ALPHABETICAL_INVERTED:
+                this.itemViewModel.get_Tasks_Oder_Alphabetical_Inverse().observe(this,this::update_Tasks);
+                break;
+            case RECENT_FIRST:
+                this.itemViewModel.get_Tasks_Oder_Recent_First().observe(this,this::update_Tasks);
+                break;
+            case OLD_FIRST:
+            case NONE:
+                this.itemViewModel.get_Tasks_Oder_Old_First().observe(this,this::update_Tasks);
+                break;
+        }
+    }
+// METHOD THAT UPDATES THE DISPLAY -----------------------------------------------------------------
+    private void update_Tasks(List<Task> tasks){
+        visibility_Tasks();
+        this.tasks= (ArrayList<Task>) tasks;
+        adapter.updateTasks(this.tasks);
+        listTasks.setAdapter(adapter);
+    }
+
 
     /**
      * Called when the user clicks on the positive button of the Create Task Dialog.
