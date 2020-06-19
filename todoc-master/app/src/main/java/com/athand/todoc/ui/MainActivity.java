@@ -1,21 +1,16 @@
 package com.athand.todoc.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.athand.todoc.Injections.Injection;
@@ -34,7 +29,7 @@ import java.util.List;
  *
  * @author Gaëtan HERFRAY
  */
-public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener , DialogAlert.Interface_AlertDialog {
 
     /**
      * List of all projects available in the application
@@ -59,24 +54,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     public static SortMethod sortMethod = SortMethod.NONE;
 
     /**
-     * Dialog to create a new task
-     */
-    @Nullable
-    private AlertDialog dialog = null;
-
-    /**
-     * EditText that allows user to set the name of a task
-     */
-    @Nullable
-    private EditText dialogEditText = null;
-
-    /**
-     * Spinner that allows the user to associate a project to a task
-     */
-    @Nullable
-    private Spinner dialogSpinner = null;
-
-    /**
      * The RecyclerView which displays the list of tasks
      */
     // Suppress warning is safe because variable is initialized in onCreate
@@ -87,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * The TextView displaying the empty state
      */
-    // Suppress warning is safe because variable is initialized in onCreate
     @SuppressWarnings("NullableProblems")
     @NonNull
     private TextView lblNoTasks;
@@ -97,21 +73,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
-        listTasks = findViewById(R.id.list_tasks);
-        lblNoTasks = findViewById(R.id.lbl_no_task);
-
-        listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        listTasks.setAdapter(adapter);
-
-        findViewById(R.id.fab_add_task).setOnClickListener(view -> showAddTaskDialog());
+        configuration_View();
 
         ItemViewModel_manager();
-
         get_Project();
         get_Tasks();
+        findViewById(R.id.fab_add_task).setOnClickListener(view -> showAddTaskDialog());
     }
 
     @Override
@@ -149,6 +117,18 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(Task task) {
         itemViewModel.delete_Task(task.getId());
+    }
+
+/**
+ CONFIGURATION OF THE VIEW __________________________________________________________________
+ */
+
+    private void configuration_View(){
+        listTasks = findViewById(R.id.list_tasks);
+        lblNoTasks = findViewById(R.id.lbl_no_task);
+
+        listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        listTasks.setAdapter(adapter);
     }
 
 /**
@@ -212,62 +192,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
 /**
-     * Called when the user clicks on the positive button of the Create Task Dialog. _______________
-     *
-     * @param dialogInterface the current displayed dialog
-     */
-
-    private void onPositiveButtonClick(DialogInterface dialogInterface) {
-        // If dialog is open
-        if (dialogEditText != null && dialogSpinner != null) {
-            // Get the name of the task
-            String taskName = dialogEditText.getText().toString();
-
-            // Get the selected project to be associated to the task
-            Project taskProject = null;
-            if (dialogSpinner.getSelectedItem() instanceof Project) {
-                taskProject = (Project) dialogSpinner.getSelectedItem();
-            }
-
-            // If a name has not been set
-            if (taskName.trim().isEmpty()) {
-                dialogEditText.setError(getString(R.string.empty_task_name));
-            }
-            // If both project and name of the task have been set
-            else if (taskProject != null) {
-                Task task = new Task(
-                        taskProject.getId(),
-                        taskName,
-                        new Date().getTime()
-                );
-
-                addTask(task);
-                dialogInterface.dismiss();
-            }
-            // If name has been set, but project has not been set (this should never occur)
-            else{
-                dialogInterface.dismiss();
-            }
-        }
-        // If dialog is aloready closed
-        else {
-            dialogInterface.dismiss();
-        }
-    }
-
-/**
      * Shows the Dialog for adding a Task __________________________________________________________
      */
 
     private void showAddTaskDialog() {
-        final AlertDialog dialog = getAddTaskDialog();
-
-        dialog.show();
-
-        dialogEditText = dialog.findViewById(R.id.txt_task_name);
-        dialogSpinner = dialog.findViewById(R.id.project_spinner);
-
-        populateDialogSpinner();
+        final DialogAlert dialog = new DialogAlert();
+        dialog.set_Project(allProjects);
+        dialog.show(getSupportFragmentManager(),null);
     }
 
 /**
@@ -277,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
 
     private void addTask(@NonNull Task task) {
-        itemViewModel.inset_Task(task);
+        this.itemViewModel.inset_Task(task);
     }
 
 /**
@@ -295,46 +226,16 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         }
 
 /**
-     * Returns the dialog allowing the user to create a new task. __________________________________
-     *
-     * @return the dialog allowing the user to create a new task
-     */
+  GET DATA AND CREATE TASK. ________________________________________________________________________
+ */
 
-    @NonNull
-    private AlertDialog getAddTaskDialog() {
-        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, R.style.Dialog);
-// ALERTDIALOG ELEMENT CONFIGURATION ---------------------------------------------------------------
-        alertBuilder.setTitle(R.string.add_task);
-        alertBuilder.setView(R.layout.dialog_add_task);
-        alertBuilder.setPositiveButton(R.string.add, null);
-        alertBuilder.setOnDismissListener(dialogInterface -> {
-            dialogEditText = null;
-            dialogSpinner = null;
-            dialog = null;
-        });
-
-        dialog = alertBuilder.create();
-
-// This instead of listener to positive button in order to avoid automatic dismiss -----------------
-        dialog.setOnShowListener(dialogInterface -> {
-
-            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            button.setOnClickListener(view -> onPositiveButtonClick(dialog));
-        });
-
-        return dialog;
-    }
-
-/**
-     * Sets the data of the Spinner with projects to associate to a new task _______________________
-     */
-
-    private void populateDialogSpinner() {
-        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, allProjects);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        if (dialogSpinner != null) {
-            dialogSpinner.setAdapter(adapter);
-        }
+    @Override
+    public void data_Callback_AlertDialog(String taskName, Project taskProject) {
+        Task task = new Task(
+                taskProject.getId(),
+                taskName,
+                new Date().getTime());
+        addTask(task);
     }
 
 /**
