@@ -26,10 +26,16 @@ FOR THIS WHEN USING THIS CLASS "SaveMyTripDataBase", WE INSTANCE WITH ITS STATIC
 @Database(entities = {Task.class, Project.class},version = 1,exportSchema = false)
 public abstract class SaveMyTripDataBase extends RoomDatabase {
 
-//SINGLETON ________________________________________________________________________________________
+/**
+SINGLETON ________________________________________________________________________________________
+ */
+
     private static volatile SaveMyTripDataBase INSTANCE;
 
-//DAO ______________________________________________________________________________________________
+/**
+DAO ______________________________________________________________________________________________
+ */
+
     public abstract TaskDao taskDao();
     public abstract ProjectDao projectDao();
 
@@ -47,7 +53,10 @@ public abstract class SaveMyTripDataBase extends RoomDatabase {
         return INSTANCE;
     }
 
-// 1st DATA PLACED IN THE DATABASE TO TEST__________________________________________________________
+/**
+ 1st DATA PLACED IN THE DATABASE TO TEST__________________________________________________________
+ */
+
     private static Callback prepopulateDataBase() {
         return new Callback() {
             @Override

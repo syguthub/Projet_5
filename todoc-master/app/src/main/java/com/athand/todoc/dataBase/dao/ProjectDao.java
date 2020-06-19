@@ -17,19 +17,18 @@ IL EFFECTUE LES REQUET SQL
 @Dao
 public interface ProjectDao {
 
-// CREATE __________________________________________________________________________________________
+/**
+ CREATE __________________________________________________________________________________________
+ */
+
     @Insert( onConflict = OnConflictStrategy.REPLACE)
     void Create_All_Project(Project[] Project);
 
-//FOR TEST ONLY ------------------------------------------------------------------------------------
-    @Insert( onConflict = OnConflictStrategy.REPLACE)
-    void Create_Project(Project project);
+/**
+ GET _____________________________________________________________________________________________
+ */
 
-// GET _____________________________________________________________________________________________
     @Query("SELECT*FROM Project" )
     LiveData <Project[]> get_All_Projects();
 
-//FOR TEST ONLY ------------------------------------------------------------------------------------
-    @Query("SELECT*FROM Project WHERE id =:id" )
-    LiveData <Project> get_Project(long id);
 }

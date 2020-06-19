@@ -21,33 +21,36 @@ import java.util.List;
  * @author Gaëtan HERFRAY
  */
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
-    /**
-     * The list of tasks the adapter deals with
-     */
+
+/**
+     * The list of tasks the adapter deals with ____________________________________________________
+*/
     @NonNull
     private List<Task> tasks;
 
-    /**
-     * The listener for when a task needs to be deleted
+/**
+     * The listener for when a task needs to be deleted ____________________________________________
      */
     @NonNull
     private final DeleteTaskListener deleteTaskListener;
 
-    /**
-     * Instantiates a new TasksAdapter.
+/**
+     * Instantiates a new TasksAdapter. ____________________________________________________________
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
+
     TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener) {
         this.tasks = tasks;
         this.deleteTaskListener = deleteTaskListener;
     }
 
-    /**
-     * Updates the list of tasks the adapter deals with.
+/**
+     * Updates the list of tasks the adapter deals with. ___________________________________________
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
+
     void updateTasks(@NonNull final List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
@@ -70,9 +73,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         return tasks.size();
     }
 
-    /**
-     * Listener for deleting tasks
+/**
+     * Listener for deleting tasks _________________________________________________________________
      */
+
     public interface DeleteTaskListener {
         /**
          * Called when a task needs to be deleted.
@@ -82,12 +86,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         void onDeleteTask(Task task);
     }
 
-    /**
-     * <p>ViewHolder for task items in the tasks list</p>
+/**
+     * <p>ViewHolder for task items in the tasks list</p> __________________________________________
      *
      * @author Gaëtan HERFRAY
      */
+
     static class TaskViewHolder extends RecyclerView.ViewHolder {
+
         /**
          * The circle icon showing the color of the project
          */
@@ -113,12 +119,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
          */
         private final DeleteTaskListener deleteTaskListener;
 
-        /**
-         * Instantiates a new TaskViewHolder.
+/**
+         * Instantiates a new TaskViewHolder. ______________________________________________________
          *
          * @param itemView the view of the task item
          * @param deleteTaskListener the listener for when a task needs to be deleted to set
          */
+
         TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener) {
             super(itemView);
 
@@ -137,11 +144,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             });
         }
 
-        /**
-         * Binds a task to the item view.
+/**
+         * Binds a task to the item view. __________________________________________________________
          *
          * @param task the task to bind in the item view
          */
+
         void bind(Task task) {
             lblTaskName.setText(task.getName());
             imgDelete.setTag(task);
@@ -154,7 +162,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 imgProject.setVisibility(View.INVISIBLE);
                 lblProjectName.setText("");
             }
-
         }
+
     }
+
 }

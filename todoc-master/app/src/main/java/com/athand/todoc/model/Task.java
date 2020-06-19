@@ -23,7 +23,7 @@ public class Task {
     /**
      * The unique identifier of the task
      */
-    @PrimaryKey
+    @PrimaryKey (autoGenerate = true)
     private long id;
 
     /**
@@ -34,7 +34,6 @@ public class Task {
     /**
      * The name of the task
      */
-    // Suppress warning because setName is called in constructor
     @SuppressWarnings("NullableProblems")
     @NonNull
     private String name;
@@ -44,24 +43,28 @@ public class Task {
      */
     private long creationTimestamp;
 
-// CONSTRUCTOR _____________________________________________________________________________________
+/**
+ CONSTRUCTOR _____________________________________________________________________________________
+ */
     /**
      * Instantiates a new Task.
      *
-     * @param id                the unique identifier of the task to set
+     *  id                the unique identifier of the task to set
      * @param projectId         the unique identifier of the project associated to the task to set
      * @param name              the name of the task to set
      * @param creationTimestamp the timestamp when the task has been created to set
      */
 
-    public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
-        this.setId(id);
+    public Task(long projectId, @NonNull String name, long creationTimestamp) {
         this.setProjectId(projectId);
         this.setName(name);
         this.setCreationTimestamp(creationTimestamp);
     }
 
-// GETTER  _________________________________________________________________________________________
+/**
+ GETTER  _________________________________________________________________________________________
+ */
+
     /**
      * Returns the unique identifier of the task.
      *
@@ -110,14 +113,16 @@ public class Task {
         return creationTimestamp;
     }
 
-// SETTER __________________________________________________________________________________________
+/**
+SETTER __________________________________________________________________________________________
+ */
 
     /**
      * Sets the unique identifier of the task.
      *
      * @param id the unique idenifier of the task to set
      */
-    private void setId(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -148,7 +153,9 @@ public class Task {
         this.creationTimestamp = creationTimestamp;
     }
 
-// FILTER __________________________________________________________________________________________
+/**
+ FILTER __________________________________________________________________________________________
+ */
 
     /**
      * Comparator to sort task from A to Z
@@ -189,4 +196,5 @@ public class Task {
             return (int) (left.creationTimestamp - right.creationTimestamp);
         }
     }
+
 }

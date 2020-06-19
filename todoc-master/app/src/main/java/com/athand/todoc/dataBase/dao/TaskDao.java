@@ -18,11 +18,17 @@ IT PERFORMS SQL REQUEST
 @Dao
 public interface TaskDao {
 
-// CREATE ------------------------------------------------------------------------------------------
+/**
+ CREATE ____________________________________________________________________________________________
+ */
+
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void inset_Task (Task task);
 
-// GET ---------------------------------------------------------------------------------------------
+/**
+ GET _______________________________________________________________________________________________
+ */
+
     @Query( "SELECT*FROM Task ORDER BY name " )
     LiveData<List<Task>> get_Tasks_Oder_Alphabetical();
 
@@ -35,7 +41,10 @@ public interface TaskDao {
     @Query( "SELECT*FROM Task ORDER BY creationTimestamp" )
     LiveData<List<Task>> get_Tasks_Oder_Old_First();
 
-// DELETE ------------------------------------------------------------------------------------------
+/**
+ DELETE ____________________________________________________________________________________________
+ */
+
     @Query("DELETE FROM Task WHERE id = :taskId")
     void delete_Task(long taskId);
 

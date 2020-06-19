@@ -20,11 +20,19 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
     public class ProjectDaoTest {
-        private SaveMyTripDataBase database;
+
+/**
+ SYNCHRONOUS TEST PROCEDURE ________________________________________________________________________
+*/
 
         @Rule
         public InstantTaskExecutorRule instantTaskExecutorRule;
 
+/**
+ CREATE A UNIQUE DATABASE FOR EACH TEXT ____________________________________________________________
+*/
+
+    private SaveMyTripDataBase database;
         @Before
         public void initDb() throws Exception{
             this.database = Room.inMemoryDatabaseBuilder
@@ -38,30 +46,41 @@ import static org.junit.Assert.assertEquals;
             database.close();
         }
 
-        // DATA SET FOR TEST
-        private static final long PROJECT_ID = 1L;
-        private static final Project PROJECT = Project.getProjectById(PROJECT_ID);
+/**
+ DATA SET FOR TEST _______________________________________________________________________________
+ */
+
         private static final Project[] PROJECTS = Project.getAllProjects();
+        private static final long PROJECT_ID = PROJECTS[0].getId();
         private static final int SIZE_PROJECT = PROJECTS.length;
 
-        @Test
-        public void create_Project_And_Get_Project() throws InterruptedException{
-            // BEFORE : ADDING A NEW TASK
-            this.database.projectDao().Create_Project(PROJECT);
-
-            // TEST
-            Project project= LiveDataTestUtil.getValue(this.database.projectDao().get_Project(PROJECT_ID));
-            assertEquals(project.getId(), PROJECT.getId());
-        }
+/**
+  CREATE LIST PROJECT AND GET LIST PROJECT _________________________________________________________
+*/
 
         @Test
         public void create_All_Projects_And_Get_All_Project() throws InterruptedException{
-            // BEFORE : ADDING A NEW TASK
-            this.database.projectDao().Create_All_Project(PROJECTS);
-            // TEST
-            Project[] projects = LiveDataTestUtil.getValue(this.database.projectDao().get_All_Projects());
-            assertEquals(SIZE_PROJECT, projects.length);
-        }
+// BEFORE : ADDING A NEW TASK ----------------------------------------------------------------------
+             this.database.projectDao().Create_All_Project(PROJECTS);
+// GET ---------------------------------------------------------------------------------------------
+             Project[] projects = LiveDataTestUtil.getValue(this.database.projectDao().get_All_Projects());
+// TEST --------------------------------------------------------------------------------------------
+             assertEquals(SIZE_PROJECT, projects.length);
+         }
+
+/**
+ CREATE LIST PROJECT AND GET ONE PROJECT ___________________________________________________________
+*/
+
+        @Test
+        public void create_All_Project_And_Get_Project() throws InterruptedException{
+// BEFORE : ADDING A NEW TASK ----------------------------------------------------------------------
+                this.database.projectDao().Create_All_Project(PROJECTS);
+// GET ---------------------------------------------------------------------------------------------
+                Project project= LiveDataTestUtil.getValue(this.database.projectDao().get_Project(PROJECT_ID));
+// TEST --------------------------------------------------------------------------------------------
+                assertEquals(project.getId(), PROJECT_ID);
+            }
 
     }
 

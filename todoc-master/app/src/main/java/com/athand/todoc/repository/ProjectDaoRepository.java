@@ -20,24 +20,20 @@ public class ProjectDaoRepository {
         this.projectDao = projectDao;
     }
 
-// CREATE __________________________________________________________________________________________
+/**
+ CREATE __________________________________________________________________________________________
+ */
+
     public void Create_All_Project(Project[] Project){
         this.projectDao.Create_All_Project(Project);
     }
 
-//FOR TEST ONLY ------------------------------------------------------------------------------------
-    public void Create_Project(Project project){
-        this.projectDao.Create_Project(project);
-    }
+/**
+ GET _____________________________________________________________________________________________
+ */
 
-// GET _____________________________________________________________________________________________
     public LiveData <Project[]> get_All_Projects(){
         return this.projectDao.get_All_Projects();
-    }
-
-//FOR TEST ONLY ------------------------------------------------------------------------------------
-    public LiveData <Project> get_Project(long id){
-        return this.projectDao.get_Project(id);
     }
 
 }

@@ -8,6 +8,7 @@ import com.athand.todoc.model.Task;
 import com.athand.todoc.repository.ProjectDaoRepository;
 import com.athand.todoc.repository.TaskDaoRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -23,53 +24,45 @@ public class ItemViewModel extends ViewModel {
     private final ProjectDaoRepository projectDaoSource;
     private final Executor executor;
 
-    private LiveData<List<Task>> current_Tasks;
-// CONSTRUCTOR _____________________________________________________________________________________
+/**
+ CONSTRUCTOR _______________________________________________________________________________________
+ */
+
     public ItemViewModel(TaskDaoRepository taskDaoSource, ProjectDaoRepository projectDaoSource, Executor executor) {
         this.taskDaoSource = taskDaoSource;
         this.projectDaoSource = projectDaoSource;
         this.executor = executor;
     }
 
-//    public void init(){
-//        if (this.current_Tasks != null){
-//            return;
-//        }
-//        switch (sortMethod) {
-//            case ALPHABETICAL:
-//                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Alphabetical();
-//                break;
-//            case ALPHABETICAL_INVERTED:
-//                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Alphabetical_Inverse();
-//                break;
-//            case RECENT_FIRST:
-//                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Recent_First();
-//                break;
-//            case OLD_FIRST:
-//                current_Tasks = this.taskDaoSource.get_Tasks_Oder_Old_First();
-//                break;
-//            case NONE:
-//                current_Tasks = this.taskDaoSource.get_Tasks();
-//                break;
-//        }
-//    }
 
-// CREATE PROJECT ----------------------------------------------------------------------------------
+/**
+ CREATE PROJECT ____________________________________________________________________________________
+ */
+
     public void Create_All_Project(Project[] Project){
         executor.execute( ()-> this.projectDaoSource.Create_All_Project(Project) );
     }
 
-// GET PROJECT -------------------------------------------------------------------------------------
+/**
+ GET PROJECT _______________________________________________________________________________________
+ */
+
     public LiveData<Project[]> get_All_Projects(){
         return this.projectDaoSource.get_All_Projects();
     }
 
-// CREATE TASK -------------------------------------------------------------------------------------
+/**
+ CREATE TASK _______________________________________________________________________________________
+ */
+
     public void inset_Task (Task task){
         executor.execute( ()-> this.taskDaoSource.inset_Task(task) );
     }
 
-// GET LIST TASK -----------------------------------------------------------------------------------
+/**
+ GET LIST TASK _____________________________________________________________________________________
+ */
+
     public LiveData<List<Task>> get_Tasks_Oder_Alphabetical() {
         return this.taskDaoSource.get_Tasks_Oder_Alphabetical();
     }
@@ -86,7 +79,10 @@ public class ItemViewModel extends ViewModel {
         return this.taskDaoSource.get_Tasks_Oder_Old_First();
     }
 
-// DELETE TASK -------------------------------------------------------------------------------------
+/**
+ DELETE TASK _______________________________________________________________________________________
+ */
+
     public void delete_Task(long taskId){
         executor.execute( ()-> this.taskDaoSource.delete_Task(taskId) );
     }

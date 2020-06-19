@@ -22,14 +22,20 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final ProjectDaoRepository projectDaoSource;
     private final Executor executor;
 
-// CONSTRUCTOR _____________________________________________________________________________________
+/**
+ CONSTRUCTOR _______________________________________________________________________________________
+ */
+
     public ViewModelFactory(TaskDaoRepository taskDaoSource, ProjectDaoRepository projectDaoSource, Executor executor) {
         this.taskDaoSource = taskDaoSource;
         this.projectDaoSource = projectDaoSource;
         this.executor = executor;
     }
 
-// RETURN CONSTRUCTED OBJECTS ______________________________________________________________________
+/**
+ RETURN CONSTRUCTED OBJECTS ________________________________________________________________________
+ */
+
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
