@@ -14,15 +14,12 @@ import android.support.annotation.Nullable;
 
 @Entity
 public class Project {
+
     /**
      * The unique identifier of the project
      */
     @PrimaryKey
     private long id;
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     /**
      * The name of the project
@@ -30,19 +27,11 @@ public class Project {
     @NonNull
     private String name;
 
-    public void setName(@NonNull String name) {
-        this.name = name;
-    }
-
     /**
      * The hex (ARGB) code of the color associated to the project
      */
     @ColorInt
     private int color;
-
-    public void setColor(int color) {
-        this.color = color;
-    }
 
 // CONSTRUCTOR _____________________________________________________________________________________
     /**
@@ -119,7 +108,21 @@ public class Project {
         return color;
     }
 
-// TO STRING _______________________________________________________________________________________
+// SETTER __________________________________________________________________________________________
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public void setName(@NonNull String name) {
+        this.name = name;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    // TO STRING _______________________________________________________________________________________
     @Override
     @NonNull
     public String toString() {

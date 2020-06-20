@@ -68,19 +68,6 @@ import static org.junit.Assert.assertEquals;
              assertEquals(SIZE_PROJECT, projects.length);
          }
 
-/**
- CREATE LIST PROJECT AND GET ONE PROJECT ___________________________________________________________
-*/
-
-        @Test
-        public void create_All_Project_And_Get_Project() throws InterruptedException{
-// BEFORE : ADDING A NEW TASK ----------------------------------------------------------------------
-                this.database.projectDao().Create_All_Project(PROJECTS);
-// GET ---------------------------------------------------------------------------------------------
-                Project project= LiveDataTestUtil.getValue(this.database.projectDao().get_Project(PROJECT_ID));
-// TEST --------------------------------------------------------------------------------------------
-                assertEquals(project.getId(), PROJECT_ID);
-            }
 
     }
 

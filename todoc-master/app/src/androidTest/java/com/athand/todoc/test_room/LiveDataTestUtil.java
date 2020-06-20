@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
  */
 
-class LiveDataTestUtil {
+public class LiveDataTestUtil {
         public static <T> T getValue(final LiveData<T> liveData) throws InterruptedException {
             final Object[] data = new Object[1];
             final CountDownLatch latch = new CountDownLatch(1);

@@ -55,14 +55,9 @@ import static org.junit.Assert.assertTrue;
  */
 
     private static final Project[] PROJECT = Project.getAllProjects();
-    private static final int TASK_ID1 = 1;
-    private final Task TASK_DEMO1 = new Task(TASK_ID1, PROJECT[0].getId(), "test A", 1);
-
-    private static final int TASK_ID2 = 2;
-    private final Task TASK_DEMO2 = new Task(TASK_ID2, PROJECT[2].getId(), "test B", 2);
-
-    private static final int TASK_ID3 = 3;
-    private final Task TASK_DEMO3 = new Task(TASK_ID3, PROJECT[1].getId(), "test C", 3);
+    private final Task TASK_DEMO1 = new Task( PROJECT[0].getId(), "test A", 1);
+    private final Task TASK_DEMO2 = new Task( PROJECT[2].getId(), "test B", 2);
+    private final Task TASK_DEMO3 = new Task( PROJECT[1].getId(), "test C", 3);
 
     private List<Task> tasks = new ArrayList<>();
 
@@ -194,15 +189,15 @@ import static org.junit.Assert.assertTrue;
     @Test
     public void insert_Task_And_Delete_Task() throws InterruptedException {
 // BEFORE : ADDING A NEW TASK ----------------------------------------------------------------------
-        this.database.projectDao().Create_Project(PROJECT[0]);
+        this.database.projectDao().Create_All_Project(PROJECT);
         this.database.taskDao().inset_Task(TASK_DEMO1);
 
 // GET ---------------------------------------------------------------------------------------------
         List<Task> tasks = LiveDataTestUtil.getValue(this.database.taskDao().get_Tasks_Oder_Old_First());
 // TEST --------------------------------------------------------------------------------------------
-        assertTrue(tasks.get(0).getName().equals(TASK_DEMO1.getName()) && tasks.get(0).getId() == (TASK_DEMO1.getId()));
+        assertEquals(tasks.get(0).getName(), TASK_DEMO1.getName());
 // DELETE ------------------------------------------------------------------------------------------
-        this.database.taskDao().delete_Task(TASK_ID1);
+        this.database.taskDao().delete_Task(tasks.get(0).getId());
 // GET ---------------------------------------------------------------------------------------------
         tasks = LiveDataTestUtil.getValue(this.database.taskDao().get_Tasks_Oder_Old_First());
 // TEST --------------------------------------------------------------------------------------------

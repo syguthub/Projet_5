@@ -17,9 +17,6 @@ import android.widget.Spinner;
 
 import com.athand.todoc.R;
 import com.athand.todoc.model.Project;
-import com.athand.todoc.model.Task;
-
-import java.util.Date;
 
 public class DialogAlert extends DialogFragment {
 
@@ -41,9 +38,17 @@ public class DialogAlert extends DialogFragment {
     @Nullable
     private Spinner dialogSpinner = null;
 
+    /**
+     * Inteeface_AlertDialog that allows to send the task data
+     */
+
     Interface_AlertDialog interface_alertDialog = new MainActivity();
 
-    Project[] allProjects;
+    /**
+     * Project that allows to the spinner configure
+     */
+
+    private Project[] allProjects;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -54,7 +59,10 @@ public class DialogAlert extends DialogFragment {
             throw new ClassCastException(getActivity().toString() + "onAttach in DonneAlertDialig");
         }
     }
-// CREATE ALERT DIALOGUE ___________________________________________________________________________
+
+/**
+ CREATE ALERT DIALOGUE _____________________________________________________________________________
+ */
 
     @NonNull
     @Override
@@ -111,7 +119,7 @@ public class DialogAlert extends DialogFragment {
             }
             // If both project and name of the task have been set
             else if (taskProject != null) {
-                interface_alertDialog.data_Callback_AlertDialog(taskName,taskProject);
+                interface_alertDialog.data_Callback_AlertDialog_To_Add_A_Task(taskName,taskProject);
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
@@ -151,7 +159,7 @@ public class DialogAlert extends DialogFragment {
  */
 
     public interface Interface_AlertDialog {
-        void data_Callback_AlertDialog(String taskName, Project taskProject);
+        void data_Callback_AlertDialog_To_Add_A_Task(String taskName, Project taskProject);
     }
 
 }

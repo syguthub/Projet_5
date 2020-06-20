@@ -35,10 +35,10 @@ public interface TaskDao {
     @Query( "SELECT*FROM Task ORDER BY name DESC" )
     LiveData<List<Task>> get_Tasks_Oder_Alphabetical_Inverse();
 
-    @Query( "SELECT*FROM Task ORDER BY creationTimestamp DESC" )
+    @Query( "SELECT*FROM Task ORDER BY id DESC" )
     LiveData<List<Task>> get_Tasks_Oder_Recent_First();
 
-    @Query( "SELECT*FROM Task ORDER BY creationTimestamp" )
+    @Query( "SELECT*FROM Task ORDER BY id" )
     LiveData<List<Task>> get_Tasks_Oder_Old_First();
 
 /**

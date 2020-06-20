@@ -1,5 +1,6 @@
 package com.athand.todoc;
 
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +9,11 @@ import android.widget.TextView;
 
 import com.athand.todoc.ui.MainActivity;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -20,6 +23,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.athand.todoc.TestUtils.withRecyclerView;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -28,11 +32,35 @@ import static org.junit.Assert.assertThat;
  * @author Gaëtan HERFRAY
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
 @RunWith(AndroidJUnit4.class)
 public class MainActivityInstrumentedTest {
 
+
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
+
+/**
+     CLEAR ALL TASKS BEFORE EACH TESTS _________________________________________________________________
+     */
+
+    @Before
+    public void delete_all_Task() throws InterruptedException {
+        MainActivity activity = rule.getActivity();
+        RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
+        int size=listTasks.getAdapter().getItemCount();
+        if(size>0) {
+            for (int i = 0; i < size; i++) {
+                onView(withId(R.id.list_tasks)).perform(RecyclerViewActions.actionOnItemAtPosition(0, new DeleteViewAction()));
+                long l=50;
+                Thread.sleep(l);
+            }
+        }
+    }
+
+/**
+ ADD AND DELETE _________________________________________________________________
+     */
 
     @Test
     public void addAndRemoveTask() {
@@ -58,6 +86,10 @@ public class MainActivityInstrumentedTest {
         // Check that recyclerView is not displayed anymore
         assertThat(listTasks.getVisibility(), equalTo(View.GONE));
     }
+
+/**
+ SORT _________________________________________________________________
+ */
 
     @Test
     public void sortTasks() {

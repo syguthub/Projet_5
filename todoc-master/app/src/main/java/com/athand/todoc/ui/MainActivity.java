@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
+    /**
+     * The ItemViewModel that allows the database access
+     */
+
     private ItemViewModel itemViewModel;
 
     @Override
@@ -230,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
  */
 
     @Override
-    public void data_Callback_AlertDialog(String taskName, Project taskProject) {
+    public void data_Callback_AlertDialog_To_Add_A_Task(String taskName, Project taskProject) {
         Task task = new Task(
                 taskProject.getId(),
                 taskName,
