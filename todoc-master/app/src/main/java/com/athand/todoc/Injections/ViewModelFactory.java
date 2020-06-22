@@ -10,7 +10,7 @@ import com.athand.todoc.ui.ItemViewModel;
 
 import java.util.concurrent.Executor;
 
-/*
+/**
 THIS CLASS AND A CONSTRUCTOR.
 
 THANKS TO THE IMPLEMENTATION "ViewModelProvider.Factory",

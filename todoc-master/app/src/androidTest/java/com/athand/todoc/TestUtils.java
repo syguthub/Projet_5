@@ -15,6 +15,7 @@ import org.hamcrest.Matchers;
 /**
  * Created by dannyroa on 5/9/15.
  */
+
 class TestUtils {
 
     public static <VH extends RecyclerView.ViewHolder> ViewAction actionOnItemViewAtPosition(int position,

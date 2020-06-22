@@ -10,7 +10,7 @@ import com.athand.todoc.model.Task;
 
 import java.util.List;
 
-/*
+/**
 DAO INTERFACE FOR THE MANAGEMENT OF ACCESS TO DATA OF THE TASK TYPE IN THE DATABASE.
 IT PERFORMS SQL REQUEST
 */
@@ -29,17 +29,8 @@ public interface TaskDao {
  GET _______________________________________________________________________________________________
  */
 
-    @Query( "SELECT*FROM Task ORDER BY name " )
-    LiveData<List<Task>> get_Tasks_Oder_Alphabetical();
-
-    @Query( "SELECT*FROM Task ORDER BY name DESC" )
-    LiveData<List<Task>> get_Tasks_Oder_Alphabetical_Inverse();
-
-    @Query( "SELECT*FROM Task ORDER BY id DESC" )
-    LiveData<List<Task>> get_Tasks_Oder_Recent_First();
-
-    @Query( "SELECT*FROM Task ORDER BY id" )
-    LiveData<List<Task>> get_Tasks_Oder_Old_First();
+    @Query( "SELECT*FROM Task" )
+    LiveData<List<Task>> get_Tasks();
 
 /**
  DELETE ____________________________________________________________________________________________

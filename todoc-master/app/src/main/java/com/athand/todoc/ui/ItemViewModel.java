@@ -24,6 +24,9 @@ public class ItemViewModel extends ViewModel {
     private final ProjectDaoRepository projectDaoSource;
     private final Executor executor;
 
+    LiveData <Project[]> projects;
+    LiveData <List<Task>> current_task;
+
 /**
  CONSTRUCTOR _______________________________________________________________________________________
  */
@@ -32,8 +35,15 @@ public class ItemViewModel extends ViewModel {
         this.taskDaoSource = taskDaoSource;
         this.projectDaoSource = projectDaoSource;
         this.executor = executor;
+        projects=this.projectDaoSource.get_All_Projects();
+        current_task= this.taskDaoSource.get_Tasks();
     }
 
+    void init (){
+        if(current_task == null) {
+            current_task = this.taskDaoSource.get_Tasks();
+        }
+    }
 
 /**
  CREATE PROJECT ____________________________________________________________________________________
@@ -48,7 +58,7 @@ public class ItemViewModel extends ViewModel {
  */
 
     public LiveData<Project[]> get_All_Projects(){
-        return this.projectDaoSource.get_All_Projects();
+        return projects;
     }
 
 /**
@@ -63,21 +73,10 @@ public class ItemViewModel extends ViewModel {
  GET LIST TASK _____________________________________________________________________________________
  */
 
-    public LiveData<List<Task>> get_Tasks_Oder_Alphabetical() {
-        return this.taskDaoSource.get_Tasks_Oder_Alphabetical();
+    public LiveData<List<Task>> get_Tasks() {
+        return current_task;
     }
 
-    public LiveData<List<Task>> get_Tasks_Oder_Alphabetical_Inverse() {
-        return this.taskDaoSource.get_Tasks_Oder_Alphabetical_Inverse();
-    }
-
-    public LiveData<List<Task>> get_Tasks_Oder_Recent_First() {
-        return this.taskDaoSource.get_Tasks_Oder_Recent_First();
-    }
-
-    public LiveData<List<Task>> get_Tasks_Oder_Old_First(){
-        return this.taskDaoSource.get_Tasks_Oder_Old_First();
-    }
 
 /**
  DELETE TASK _______________________________________________________________________________________

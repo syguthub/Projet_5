@@ -9,7 +9,7 @@ import com.athand.todoc.repository.TaskDaoRepository;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-/*
+/**
 CLASS FOR INSTANCING OBJECTS
 */
 

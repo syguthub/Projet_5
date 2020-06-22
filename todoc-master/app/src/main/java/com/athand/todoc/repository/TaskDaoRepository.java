@@ -7,7 +7,7 @@ import com.athand.todoc.model.Task;
 
 import java.util.List;
 
-/*
+/**
 THIS CLASS ALLOWS FOR INSTANCING THE INTERFACE TaskDao
 
  */
@@ -32,20 +32,8 @@ public class TaskDaoRepository {
  GET _____________________________________________________________________________________________
  */
 
-    public LiveData<List<Task>> get_Tasks_Oder_Alphabetical() {
-        return this.taskDao.get_Tasks_Oder_Alphabetical();
-    }
-
-    public LiveData<List<Task>> get_Tasks_Oder_Alphabetical_Inverse() {
-        return this.taskDao.get_Tasks_Oder_Alphabetical_Inverse();
-    }
-
-    public LiveData<List<Task>> get_Tasks_Oder_Recent_First() {
-        return this.taskDao.get_Tasks_Oder_Recent_First();
-    }
-
-    public LiveData<List<Task>> get_Tasks_Oder_Old_First(){
-        return this.taskDao.get_Tasks_Oder_Old_First();
+    public LiveData<List<Task>> get_Tasks() {
+        return this.taskDao.get_Tasks();
     }
 
 /**

@@ -10,10 +10,11 @@ import com.athand.todoc.model.Project;
 
 import java.util.List;
 
-/*
+/**
 INTERFACE DAO POUR LA GESTION DES ACCES AU DONEE DE TYPE Project DANS LA BASE DE DONNEE
 IL EFFECTUE LES REQUET SQL
 */
+
 @Dao
 public interface ProjectDao {
 

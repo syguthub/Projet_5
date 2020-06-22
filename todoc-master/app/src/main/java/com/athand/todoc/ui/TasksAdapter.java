@@ -20,6 +20,7 @@ import java.util.List;
  *
  * @author Gaëtan HERFRAY
  */
+
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
 /**

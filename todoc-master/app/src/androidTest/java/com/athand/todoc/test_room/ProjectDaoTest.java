@@ -18,6 +18,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * DataBase test for project
+ *
+ * @author GASSAMA SOULEYMAN
+ */
+
 @RunWith(AndroidJUnit4.class)
     public class ProjectDaoTest {
 
@@ -67,7 +73,6 @@ import static org.junit.Assert.assertEquals;
 // TEST --------------------------------------------------------------------------------------------
              assertEquals(SIZE_PROJECT, projects.length);
          }
-
 
     }
 

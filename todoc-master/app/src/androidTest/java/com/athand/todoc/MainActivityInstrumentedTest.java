@@ -1,6 +1,5 @@
 package com.athand.todoc;
 
-import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +22,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.athand.todoc.TestUtils.withRecyclerView;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -51,14 +49,15 @@ public class MainActivityInstrumentedTest {
         int size=listTasks.getAdapter().getItemCount();
         if(size>0) {
             for (int i = 0; i < size; i++) {
-                onView(withId(R.id.list_tasks)).perform(RecyclerViewActions.actionOnItemAtPosition(0, new DeleteViewAction()));
+                onView(withId(R.id.list_tasks)).perform(TestUtils.actionOnItemViewAtPosition(0,R.id.img_delete,click()));
                 long l=50;
                 Thread.sleep(l);
             }
         }
     }
 
-/**
+
+    /**
  ADD AND DELETE _________________________________________________________________
      */
 

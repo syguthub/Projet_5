@@ -20,6 +20,7 @@ import com.athand.todoc.model.Project;
 import com.athand.todoc.model.Task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -81,15 +82,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         configuration_View();
 
         ItemViewModel_manager();
+        itemViewModel.init();
+
         get_Project();
         get_Tasks();
         findViewById(R.id.fab_add_task).setOnClickListener(view -> showAddTaskDialog());
-    }
-
-    @Override
-    protected void onResume() {
-        get_Tasks();
-        super.onResume();
     }
 
     @Override
@@ -113,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         }
 
         get_Tasks();
-        visibility_Tasks();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -142,8 +137,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void ItemViewModel_manager(){
         ViewModelFactory viewModelFactory = Injection.provide_View_Model_Factory(this);
         this.itemViewModel= ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel.class);
-// CREATION OF BASIC PROJECTS ----------------------------------------------------------------------
-        this.itemViewModel.Create_All_Project(Project.getAllProjects());
     }
 
 /**
@@ -166,28 +159,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
 // GET LIST TASK AND AUTOMATICALLY UPDATE IT EVERY CHANGE __________________________________________
     private void get_Tasks() {
-//SELECT THE TASK DISPLAY ORDER --------------------------------------------------------------------
-        switch (sortMethod) {
-            case ALPHABETICAL:
-                this.itemViewModel.get_Tasks_Oder_Alphabetical().observe(this,this::update_Tasks);
-                break;
-            case ALPHABETICAL_INVERTED:
-                this.itemViewModel.get_Tasks_Oder_Alphabetical_Inverse().observe(this,this::update_Tasks);
-                break;
-            case RECENT_FIRST:
-                this.itemViewModel.get_Tasks_Oder_Recent_First().observe(this,this::update_Tasks);
-                break;
-            case OLD_FIRST:
-            case NONE:
-                this.itemViewModel.get_Tasks_Oder_Old_First().observe(this,this::update_Tasks);
-                break;
-        }
+        this.itemViewModel.get_Tasks().observe(this,this::updateTasks);
     }
 
 // METHOD THAT UPDATES THE DISPLAY _________________________________________________________________
     private void update_Tasks(List<Task> tasks){
-// ICON VISIBILITY UPDATE --------------------------------------------------------------------------
-        visibility_Tasks();
 // TASK UPDATE -------------------------------------------------------------------------------------
         this.tasks= (ArrayList<Task>) tasks;
 // RECYCLERVIEW UPDATE -----------------------------------------------------------------------------
@@ -216,18 +192,35 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
 /**
-     * ICON VISIBILITY MANAGEMENT __________________________________________________________________
+     * Updates the list of tasks in the UI
      */
 
-    private void visibility_Tasks() {
-            if (this.tasks.size() == 0) {
-                lblNoTasks.setVisibility(View.VISIBLE);
-                listTasks.setVisibility(View.GONE);
-            } else {
-                lblNoTasks.setVisibility(View.GONE);
-                listTasks.setVisibility(View.VISIBLE);
+    private void updateTasks(List<Task> tasks) {
+        this.tasks= (ArrayList<Task>) tasks;
+        if (tasks.size() == 0) {
+            lblNoTasks.setVisibility(View.VISIBLE);
+            listTasks.setVisibility(View.GONE);
+        } else {
+            lblNoTasks.setVisibility(View.GONE);
+            listTasks.setVisibility(View.VISIBLE);
+            switch (sortMethod) {
+                case ALPHABETICAL:
+                    Collections.sort(tasks, new Task.TaskAZComparator());
+                    break;
+                case ALPHABETICAL_INVERTED:
+                    Collections.sort(tasks, new Task.TaskZAComparator());
+                    break;
+                case RECENT_FIRST:
+                    Collections.sort(tasks, new Task.TaskRecentComparator());
+                    break;
+                case OLD_FIRST:
+                    Collections.sort(tasks, new Task.TaskOldComparator());
+                    break;
+
             }
+            adapter.updateTasks(tasks);
         }
+    }
 
 /**
   GET DATA AND CREATE TASK. ________________________________________________________________________

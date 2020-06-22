@@ -16,7 +16,7 @@ import com.athand.todoc.model.Task;
 
 import java.util.Date;
 
-/*
+/**
 CENTRALIZE THE DAO INTERFACE THAT MANAGES ACCESS TO DATABASES OF THE DATABASE
 
 CREATE A SINGLE INSTANCE "INSTANCE" IN ORDER TO BE ABLE TO ACCESS THE SAME DATA IN ALL THE CLASSES
@@ -62,13 +62,15 @@ DAO ____________________________________________________________________________
             @Override
             public void onCreate(@NonNull SupportSQLiteDatabase db) {
                 super.onCreate(db);
+                Project[] projects=Project.getAllProjects();
 
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("id",1);
-                contentValues.put("ProjectId",3L);
-                contentValues.put("name","test");
-                contentValues.put("creationTimestamp",new Date().getTime());
-                db.insert("Task", OnConflictStrategy.IGNORE,contentValues);
+                for (Project project : projects) {
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("id", project.getId());
+                    contentValues.put("name", project.getName());
+                    contentValues.put("color", project.getColor());
+                    db.insert("Project", OnConflictStrategy.IGNORE, contentValues);
+                }
             }
         };
     }
