@@ -1,7 +1,12 @@
 package com.athand.todoc.test_room;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
+import android.arch.persistence.db.SupportSQLiteDatabase;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
+import android.content.ContentValues;
+import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -43,8 +48,27 @@ import static org.junit.Assert.assertEquals;
         public void initDb() throws Exception{
             this.database = Room.inMemoryDatabaseBuilder
                     (InstrumentationRegistry.getContext(),SaveMyTripDataBase.class)
-                    .allowMainThreadQueries()
+                    .addCallback(prepopulateDataBase())
                     .build();
+            }
+
+// SET PROJECT IN DATA PLACED IN THE DATABASE TO TEST__________________________________________________________
+        private static RoomDatabase.Callback prepopulateDataBase() {
+                return new RoomDatabase.Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+                        Project[] projects=Project.getAllProjects();
+
+                        for (Project project : projects) {
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("id", project.getId());
+                            contentValues.put("name", project.getName());
+                            contentValues.put("color", project.getColor());
+                            db.insert("Project", OnConflictStrategy.IGNORE, contentValues);
+                        }
+                    }
+                };
         }
 
         @After
@@ -57,7 +81,6 @@ import static org.junit.Assert.assertEquals;
  */
 
         private static final Project[] PROJECTS = Project.getAllProjects();
-        private static final long PROJECT_ID = PROJECTS[0].getId();
         private static final int SIZE_PROJECT = PROJECTS.length;
 
 /**
@@ -65,9 +88,7 @@ import static org.junit.Assert.assertEquals;
 */
 
         @Test
-        public void create_All_Projects_And_Get_All_Project() throws InterruptedException{
-// BEFORE : ADDING A NEW TASK ----------------------------------------------------------------------
-             this.database.projectDao().Create_All_Project(PROJECTS);
+        public void Get_All_Project() throws InterruptedException{
 // GET ---------------------------------------------------------------------------------------------
              Project[] projects = LiveDataTestUtil.getValue(this.database.projectDao().get_All_Projects());
 // TEST --------------------------------------------------------------------------------------------

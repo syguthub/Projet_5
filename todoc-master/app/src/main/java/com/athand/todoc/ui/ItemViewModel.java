@@ -8,13 +8,12 @@ import com.athand.todoc.model.Task;
 import com.athand.todoc.repository.ProjectDaoRepository;
 import com.athand.todoc.repository.TaskDaoRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 /*
 THIS CLASS ALLOWS TO SAVE GRAPHIC INTERFACE DATA WHEN CHANGING THE CONFIGURATION.
-WE RECOVER THEM HERE AND REAPSHEETS IN OUR CASE THE LIST Task DISPLAY ORDER
+WE RECOVER THEM HERE AND REAP SHEETS IN OUR CASE THE LIST Task DISPLAY ORDER
 
 */
 
@@ -24,8 +23,8 @@ public class ItemViewModel extends ViewModel {
     private final ProjectDaoRepository projectDaoSource;
     private final Executor executor;
 
-    LiveData <Project[]> projects;
-    LiveData <List<Task>> current_task;
+    private final LiveData <Project[]> projects;
+    private LiveData <List<Task>> current_task;
 
 /**
  CONSTRUCTOR _______________________________________________________________________________________
@@ -36,21 +35,16 @@ public class ItemViewModel extends ViewModel {
         this.projectDaoSource = projectDaoSource;
         this.executor = executor;
         projects=this.projectDaoSource.get_All_Projects();
-        current_task= this.taskDaoSource.get_Tasks();
     }
+
+/**
+ CREATE UNIQUE CURRENT TASK ________________________________________________________________________
+ */
 
     void init (){
         if(current_task == null) {
             current_task = this.taskDaoSource.get_Tasks();
         }
-    }
-
-/**
- CREATE PROJECT ____________________________________________________________________________________
- */
-
-    public void Create_All_Project(Project[] Project){
-        executor.execute( ()-> this.projectDaoSource.Create_All_Project(Project) );
     }
 
 /**

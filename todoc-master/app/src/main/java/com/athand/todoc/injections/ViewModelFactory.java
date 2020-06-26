@@ -1,4 +1,4 @@
-package com.athand.todoc.Injections;
+package com.athand.todoc.injections;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
 THIS CLASS AND A CONSTRUCTOR.
 
 THANKS TO THE IMPLEMENTATION "ViewModelProvider.Factory",
-IT SIMPLIFIES THE CREATION OF LOBJET ItemViewModel
+IT SIMPLIFIES THE CREATION OF OBJECT ItemViewModel
 */
 
 public class ViewModelFactory implements ViewModelProvider.Factory {

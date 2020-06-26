@@ -1,4 +1,4 @@
-package com.athand.todoc.Injections;
+package com.athand.todoc.injections;
 
 import android.content.Context;
 

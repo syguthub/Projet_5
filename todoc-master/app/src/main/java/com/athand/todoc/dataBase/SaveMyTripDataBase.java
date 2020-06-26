@@ -14,8 +14,6 @@ import com.athand.todoc.dataBase.dao.TaskDao;
 import com.athand.todoc.model.Project;
 import com.athand.todoc.model.Task;
 
-import java.util.Date;
-
 /**
 CENTRALIZE THE DAO INTERFACE THAT MANAGES ACCESS TO DATABASES OF THE DATABASE
 
@@ -54,7 +52,7 @@ DAO ____________________________________________________________________________
     }
 
 /**
- 1st DATA PLACED IN THE DATABASE TO TEST__________________________________________________________
+ SET PROJECT IN DATA PLACED IN THE DATABASE ________________________________________________________
  */
 
     private static Callback prepopulateDataBase() {

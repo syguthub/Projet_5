@@ -43,11 +43,10 @@ public class Task {
      */
     private long creationTimestamp;
 
+
 /**
- CONSTRUCTOR _____________________________________________________________________________________
- */
-    /**
-     * Instantiates a new Task.
+     *CONSTRUCTOR _____________________________________________________________________________________
+     *  Instantiates a new Task.
      *
      *  id                the unique identifier of the task to set
      * @param projectId         the unique identifier of the project associated to the task to set
@@ -61,7 +60,7 @@ public class Task {
         this.setCreationTimestamp(creationTimestamp);
     }
 
-/**
+/*
  GETTER  _________________________________________________________________________________________
  */
 
@@ -113,14 +112,14 @@ public class Task {
         return creationTimestamp;
     }
 
-/**
+/*
 SETTER __________________________________________________________________________________________
  */
 
     /**
      * Sets the unique identifier of the task.
      *
-     * @param id the unique idenifier of the task to set
+     * @param id the unique identifier of the task to set
      */
     public void setId(long id) {
         this.id = id;
@@ -149,11 +148,11 @@ SETTER _________________________________________________________________________
      *
      * @param creationTimestamp the timestamp when the task has been created to set
      */
-    public void setCreationTimestamp(long creationTimestamp) {
+    private void setCreationTimestamp(long creationTimestamp) {
         this.creationTimestamp = creationTimestamp;
     }
 
-/**
+/*
  FILTER __________________________________________________________________________________________
  */
 

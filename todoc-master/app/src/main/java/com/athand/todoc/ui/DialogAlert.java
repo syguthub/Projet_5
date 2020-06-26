@@ -39,10 +39,10 @@ public class DialogAlert extends DialogFragment {
     private Spinner dialogSpinner = null;
 
     /**
-     * Inteeface_AlertDialog that allows to send the task data
+     * Interface_AlertDialog that allows to send the task data
      */
 
-    Interface_AlertDialog interface_alertDialog = new MainActivity();
+    private Interface_AlertDialog interface_alertDialog = new MainActivity();
 
     /**
      * Project that allows to the spinner configure
@@ -127,7 +127,7 @@ public class DialogAlert extends DialogFragment {
                 dialogInterface.dismiss();
             }
         }
-        // If dialog is aloready closed
+        // If dialog is already closed
         else {
             dialogInterface.dismiss();
         }
@@ -145,7 +145,7 @@ public class DialogAlert extends DialogFragment {
  SPINNER CONFIGURATION _____________________________________________________________________________
 */
 
-    public void populateDialogSpinner() {
+    private void populateDialogSpinner() {
 
         final ArrayAdapter<Project> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, allProjects);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

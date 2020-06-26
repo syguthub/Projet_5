@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.athand.todoc.Injections.Injection;
-import com.athand.todoc.Injections.ViewModelFactory;
+import com.athand.todoc.injections.Injection;
+import com.athand.todoc.injections.ViewModelFactory;
 import com.athand.todoc.R;
 import com.athand.todoc.model.Project;
 import com.athand.todoc.model.Task;
@@ -30,6 +30,7 @@ import java.util.List;
  *
  * @author Gaëtan HERFRAY
  */
+
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener , DialogAlert.Interface_AlertDialog {
 
     /**
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * The sort method to be used to display tasks
      */
     @NonNull
-    public static SortMethod sortMethod = SortMethod.NONE;
+    private static SortMethod sortMethod = SortMethod.NONE;
 
     /**
      * The RecyclerView which displays the list of tasks
@@ -162,38 +163,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         this.itemViewModel.get_Tasks().observe(this,this::updateTasks);
     }
 
-// METHOD THAT UPDATES THE DISPLAY _________________________________________________________________
-    private void update_Tasks(List<Task> tasks){
-// TASK UPDATE -------------------------------------------------------------------------------------
-        this.tasks= (ArrayList<Task>) tasks;
-// RECYCLERVIEW UPDATE -----------------------------------------------------------------------------
-        adapter.updateTasks(this.tasks);
-        listTasks.setAdapter(adapter);
-    }
-
-/**
-     * Shows the Dialog for adding a Task __________________________________________________________
-     */
-
-    private void showAddTaskDialog() {
-        final DialogAlert dialog = new DialogAlert();
-        dialog.set_Project(allProjects);
-        dialog.show(getSupportFragmentManager(),null);
-    }
-
-/**
-     * Adds the given task to the list of created tasks. ___________________________________________
-     *
-     * @param task the task to be added to the list
-     */
-
-    private void addTask(@NonNull Task task) {
-        this.itemViewModel.inset_Task(task);
-    }
-
-/**
-     * Updates the list of tasks in the UI
-     */
+// UPDATES THE LIST OF TASKS IN THE UI _____________________________________________________________
 
     private void updateTasks(List<Task> tasks) {
         this.tasks= (ArrayList<Task>) tasks;
@@ -220,6 +190,26 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             adapter.updateTasks(tasks);
         }
+    }
+
+/**
+     * Shows the Dialog for adding a Task __________________________________________________________
+     */
+
+    private void showAddTaskDialog() {
+        final DialogAlert dialog = new DialogAlert();
+        dialog.set_Project(allProjects);
+        dialog.show(getSupportFragmentManager(),null);
+    }
+
+/**
+     * Adds the given task to the list of created tasks. ___________________________________________
+     *
+     * @param task the task to be added to the list
+     */
+
+    private void addTask(@NonNull Task task) {
+        this.itemViewModel.inset_Task(task);
     }
 
 /**
