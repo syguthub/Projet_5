@@ -1,0 +1,229 @@
+@startuml
+
+class Project {
+    -id : long
+    -name : String
+    -color : Integer
+
+    + Project(long id, @NonNull String name, @ColorInt int color)
+
+    + getAllProjects() : Project[]
+    + getProjectById(id) : Project
+    + getId() : long
+    + getName() : String
+    + getColor() : int
+    + setColor(color) : void
+    + setName( String name) : void
+    + setId(id) : void
+    + toString() : String()
+}
+
+class Task {
+    - id : long
+    - projectId:long : Integer
+    - name:String : Integer
+    - creationTimestamp : long
+
+    + Task(long projectId, @NonNull String name, long creationTimestamp)(projectId)
+
+    + getId() : long
+    + getProject() : Project
+    + getProjectId() : long
+    + getName() : String
+    + getCreationTimestamp() : long
+    + setId(id) : void
+    + setProjectId(projectId) : void
+    + setName(@NonNull String name) : void
+    + setCreationTimestamp(creationTimestamp) : void
+}
+
+class TaskRecentComparator {
+    + compare(Task left, Task right) : int
+}
+
+class TaskOldComparator {
+    + compare(Task left, Task right) : int
+}
+
+class TaskAZComparator {
+    + compare(Task left, Task right) : int
+}
+
+class TaskZAComparator {
+    + compare(Task left, Task right) : int
+}
+
+class ProjectDao{
+    + get_All_Projects : LiveData <Project[]>
+}
+
+class TaskDao{
+    + delete_Task(taskId) : void
+    + inset_Task(task) : void
+    + get_Task: LiveData<List<Task>>
+}
+
+class ProjectDaoRepository {
+    + projectDao : ProjectDao
+
+    + ProjectDaoRepository(projectDao)
+
+    + get_All_Projects() : LiveData <Project[]>
+}
+
+class TaskDaoRepository {
+    + TaskDaoRepository(TaskDao)
+
+    + inset_Task(task)
+    + delete_Task(taskId)
+    + get_Tasks() : LiveData<List<Task>>()
+}
+
+abstract class SaveMyTripDataBase {
+    {static} INSTANCE : SaveMyTripDataBase
+
+    {static} prepopulateDataBase()()
+    {static} getINSTANCE(Context context)() : SaveMyTripDataBase
+   {abstract} taskDao() : TaskDao
+   {abstract} projectDao() : ProjectDao
+}
+
+class Injection {
+    {Static} provide_Task_Dao_Source(Context context)() : TaskDaoRepository
+    {Static} provide_Project_Dao_Source(context) : ProjectDaoRepository
+    {Static} provide_Executor() : Executor
+    {Static} provide_View_Model_Factory(context) : ViewModelFactory
+}
+
+class ViewModelFactory {
+    + taskDaoSource : TaskDaoRepository
+    + projectDaoSource : ProjectDaoRepository
+    + executor : Executor
+
+    + ViewModelFactory(taskDaoSource,projectDaoSource,executor)
+}
+
+class ItemViewModel {
+    - taskDaoSource : TaskDaoRepository
+    - projectDaoSource : ProjectDaoRepository
+    - executor : Executor
+    - current_task : LiveData <List<Task>>
+    - projects : LiveData <Project[]>
+
+    + ItemViewModel(taskDaoSource,projectDaoSource,executor)
+
+    + init() : void
+    + get_All_Projects() : LiveData <Project[]>
+    + inset_Task(task) : void
+    + delete_Task(taskId) : void
+    + get_Tasks() : LiveData <List<Task>>
+}
+
+class MainActivity {
+    - allProjects : Project[]
+    - tasks : ArrayList<Task> : Integer
+    - adapter : TasksAdapter
+    - sortMethod : SortMethod
+    - listTasks : RecyclerView
+    - lblNoTasks : TextView
+    - itemViewModel : ItemViewModel
+
+    + onCreate(@Nullable Bundle savedInstanceState) : void
+    + onCreateOptionsMenu(menu) : Boolean
+    + onOptionsItemSelected(item) : Boolean
+    + onDeleteTask(task) : void
+    - configuration_View() : void
+    - ItemViewModel_manager() : void
+    - get_Project() : void
+    - update_Project(project) : void
+    - get_Tasks() : void
+    - updateTasks(tasks) : void
+    - showAddTaskDialog() : void
+    + data_Callback_AlertDialog_To_Add_A_Task(String taskName, Project taskProject) : void
+    - addTask(@NonNull Task task) : void
+}
+
+enum SortMethod {
+     ALPHABETICAL
+     ALPHABETICAL_INVERTED
+     RECENT_FIRST
+     OLD_FIRST
+     NONE
+}
+class DialogAlert {
+    - dialog : AlertDialog
+    - dialogEditText : EditText
+    - dialogSpinner : Spinner
+    - interface_alertDialog : Interface_alertDialog
+    - allProjects : Project
+
+    + onAttach(@NonNull Context context) : void
+    + onCreateDialog(@Nullable Bundle savedInstanceState) : Dialog
+    + onPositiveButtonClick(dialogInterface) : void
+    + set_Project(Project [] allProjects)() : void
+    - populateDialogSpinner() : void
+}
+
+interface Interface_alertDialog {
+    + data_Callback_AlertDialog_To_Add_A_Task(taskName,taskProject)
+}
+
+class TasksAdapter {
+    - tasks : List<Task>
+    - deleteTaskListener : DeleteTaskListener
+
+    + TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener)
+
+    + updateTasks(@NonNull final List<Task> tasks) : void
+    + TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
+    + onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) : void
+    + getItemCount() : int
+}
+
+class TaskViewHolder {
+    - imgProject : AppCompatImageView
+    - lblTaskName : TextView
+    - lblProjectName : TextView
+    - imgDelete : TextView
+    - deleteTaskListener : DeleteTaskListener
+
+    + TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener)
+
+    bind(task) : void
+}
+
+interface DeleteTaskListener {
+    + onDeleteTask(task) : void
+}
+
+Task --> TaskAZComparator
+Task --> TaskZAComparator
+Task --> TaskOldComparator
+Task --> TaskRecentComparator
+
+ProjectDaoRepository --> ProjectDao
+TaskDaoRepository --> TaskDao
+
+TasksAdapter --> TaskViewHolder
+TasksAdapter ..> DeleteTaskListener
+
+DialogAlert ..> Interface_alertDialog
+
+MainActivity --> TasksAdapter
+MainActivity --> SortMethod
+MainActivity --> ItemViewModel
+MainActivity --> ViewModelFactory
+MainActivity --> Injection
+MainActivity --> DialogAlert
+MainActivity --> Project
+
+ViewModelFactory --> TaskDaoRepository
+ViewModelFactory --> ProjectDaoRepository
+
+ItemViewModel --> TaskDaoRepository
+ItemViewModel --> ProjectDaoRepository
+
+SaveMyTripDataBase ..> TaskDao
+SaveMyTripDataBase ..> ProjectDao
+
+@enduml
