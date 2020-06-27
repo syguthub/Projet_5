@@ -54,17 +54,17 @@ class TaskZAComparator {
 }
 
 class ProjectDao{
-    + get_All_Projects : LiveData <Project[]>
+    get_All_Projects : LiveData <Project[]>
 }
 
 class TaskDao{
-    + delete_Task(taskId) : void
-    + inset_Task(task) : void
-    + get_Task: LiveData<List<Task>>
+    delete_Task(taskId) : void
+    inset_Task(task) : void
+    get_Task: LiveData<List<Task>>
 }
 
 class ProjectDaoRepository {
-    + projectDao : ProjectDao
+    - projectDao : ProjectDao
 
     + ProjectDaoRepository(projectDao)
 
@@ -72,6 +72,8 @@ class ProjectDaoRepository {
 }
 
 class TaskDaoRepository {
+    - taskDao : TaskDao
+
     + TaskDaoRepository(TaskDao)
 
     + inset_Task(task)
@@ -80,27 +82,28 @@ class TaskDaoRepository {
 }
 
 abstract class SaveMyTripDataBase {
-    {static} INSTANCE : SaveMyTripDataBase
-
-    {static} prepopulateDataBase()()
-    {static} getINSTANCE(Context context)() : SaveMyTripDataBase
-   {abstract} taskDao() : TaskDao
-   {abstract} projectDao() : ProjectDao
+    - {static} INSTANCE : SaveMyTripDataBase
+    + {abstract} taskDao() : TaskDao
+    + {abstract} projectDao() : ProjectDao
+    + {static} getINSTANCE(Context context)() : SaveMyTripDataBase
+    - {static} prepopulateDataBase() : Callback
 }
 
 class Injection {
-    {Static} provide_Task_Dao_Source(Context context)() : TaskDaoRepository
-    {Static} provide_Project_Dao_Source(context) : ProjectDaoRepository
-    {Static} provide_Executor() : Executor
-    {Static} provide_View_Model_Factory(context) : ViewModelFactory
+    + {Static} provide_Task_Dao_Source(Context context)() : TaskDaoRepository
+    + {Static} provide_Project_Dao_Source(context) : ProjectDaoRepository
+    + {Static} provide_Executor() : Executor
+    + {Static} provide_View_Model_Factory(context) : ViewModelFactory
 }
 
 class ViewModelFactory {
-    + taskDaoSource : TaskDaoRepository
-    + projectDaoSource : ProjectDaoRepository
-    + executor : Executor
+    - taskDaoSource : TaskDaoRepository
+    - projectDaoSource : ProjectDaoRepository
+    - executor : Executor
 
     + ViewModelFactory(taskDaoSource,projectDaoSource,executor)
+
+    + create(@NonNull Class<T> modelClass) : T
 }
 
 class ItemViewModel {
@@ -123,7 +126,7 @@ class MainActivity {
     - allProjects : Project[]
     - tasks : ArrayList<Task> : Integer
     - adapter : TasksAdapter
-    - sortMethod : SortMethod
+    - {static} sortMethod : SortMethod
     - listTasks : RecyclerView
     - lblNoTasks : TextView
     - itemViewModel : ItemViewModel
@@ -132,6 +135,7 @@ class MainActivity {
     + onCreateOptionsMenu(menu) : Boolean
     + onOptionsItemSelected(item) : Boolean
     + onDeleteTask(task) : void
+    + data_Callback_AlertDialog_To_Add_A_Task(String taskName, Project taskProject) : void
     - configuration_View() : void
     - ItemViewModel_manager() : void
     - get_Project() : void
@@ -139,7 +143,6 @@ class MainActivity {
     - get_Tasks() : void
     - updateTasks(tasks) : void
     - showAddTaskDialog() : void
-    + data_Callback_AlertDialog_To_Add_A_Task(String taskName, Project taskProject) : void
     - addTask(@NonNull Task task) : void
 }
 
@@ -159,7 +162,7 @@ class DialogAlert {
 
     + onAttach(@NonNull Context context) : void
     + onCreateDialog(@Nullable Bundle savedInstanceState) : Dialog
-    + onPositiveButtonClick(dialogInterface) : void
+    - onPositiveButtonClick(dialogInterface) : void
     + set_Project(Project [] allProjects)() : void
     - populateDialogSpinner() : void
 }
@@ -174,7 +177,7 @@ class TasksAdapter {
 
     + TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener)
 
-    + updateTasks(@NonNull final List<Task> tasks) : void
+      updateTasks(@NonNull final List<Task> tasks) : void
     + TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     + onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) : void
     + getItemCount() : int
@@ -196,34 +199,36 @@ interface DeleteTaskListener {
     + onDeleteTask(task) : void
 }
 
-Task --> TaskAZComparator
-Task --> TaskZAComparator
-Task --> TaskOldComparator
-Task --> TaskRecentComparator
+Task "1" --> "1" TaskAZComparator
+Task "1" --> "1" TaskZAComparator
+Task "1" --> "1" TaskOldComparator
+Task "1" --> "1" TaskRecentComparator
 
-ProjectDaoRepository --> ProjectDao
-TaskDaoRepository --> TaskDao
+ProjectDaoRepository "1" --> "1" ProjectDao
+TaskDaoRepository "1" --> "1" TaskDao
 
-TasksAdapter --> TaskViewHolder
-TasksAdapter ..> DeleteTaskListener
+TasksAdapter "1" --|> "1" TaskViewHolder
+TasksAdapter "1" ..> "1" DeleteTaskListener
 
-DialogAlert ..> Interface_alertDialog
+DialogAlert "1" ..> "1" Interface_alertDialog
 
-MainActivity --> TasksAdapter
-MainActivity --> SortMethod
-MainActivity --> ItemViewModel
-MainActivity --> ViewModelFactory
-MainActivity --> Injection
-MainActivity --> DialogAlert
-MainActivity --> Project
+MainActivity "1" --> "1" TasksAdapter
+MainActivity "1" --> "1" SortMethod
+MainActivity "1" --> "1" ItemViewModel
+MainActivity "1" --> "1" ViewModelFactory
+MainActivity "1" --> "1" Injection
+MainActivity "1" --> "1" DialogAlert
+MainActivity "1" --> "1" Project
 
-ViewModelFactory --> TaskDaoRepository
-ViewModelFactory --> ProjectDaoRepository
+ViewModelFactory "1" --> "1" TaskDaoRepository
+ViewModelFactory "1" --> "1" ProjectDaoRepository
 
-ItemViewModel --> TaskDaoRepository
-ItemViewModel --> ProjectDaoRepository
+ItemViewModel "1" --> "1" TaskDaoRepository
+ItemViewModel "1" --> "1" ProjectDaoRepository
 
-SaveMyTripDataBase ..> TaskDao
-SaveMyTripDataBase ..> ProjectDao
+SaveMyTripDataBase "1" ..> "1" TaskDao
+SaveMyTripDataBase "1" ..> "1" ProjectDao
+
+Task "*" --> "1" Project
 
 @enduml
