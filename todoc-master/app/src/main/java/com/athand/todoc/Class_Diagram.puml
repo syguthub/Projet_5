@@ -1,12 +1,22 @@
 @startuml
 
-class Project {
+skinparam class {
+  borderColor black
+  backgroundColor<< interface >> GreenYellow
+  backgroundColor<< class >> LightCyan
+  backgroundColor<< static >> NavajoWhite
+  backgroundColor<< abstract >> pink
+  backgroundColor<< enum >> application
+
+}
+
+class Project <<class>> {
     -id : long
     -name : String
-    -color : Integer
-
+    -color : int
+-- constructor--
     + Project(long id, @NonNull String name, @ColorInt int color)
-
+..
     + getAllProjects() : Project[]
     + getProjectById(id) : Project
     + getId() : long
@@ -18,14 +28,14 @@ class Project {
     + toString() : String()
 }
 
-class Task {
+class Task <<class>> {
     - id : long
-    - projectId:long : Integer
-    - name:String : Integer
+    - projectId :long
+    - name : String
     - creationTimestamp : long
-
+-- constructor--
     + Task(long projectId, @NonNull String name, long creationTimestamp)(projectId)
-
+..
     + getId() : long
     + getProject() : Project
     + getProjectId() : long
@@ -37,51 +47,51 @@ class Task {
     + setCreationTimestamp(creationTimestamp) : void
 }
 
-class TaskRecentComparator {
+class TaskRecentComparator <<static>> {
     + compare(Task left, Task right) : int
 }
 
-class TaskOldComparator {
+class TaskOldComparator <<static>> {
     + compare(Task left, Task right) : int
 }
 
-class TaskAZComparator {
+class TaskAZComparator <<static>> {
     + compare(Task left, Task right) : int
 }
 
-class TaskZAComparator {
+class TaskZAComparator <<static>> {
     + compare(Task left, Task right) : int
 }
 
-class ProjectDao{
+interface ProjectDao <<interface>>{
     get_All_Projects : LiveData <Project[]>
 }
 
-class TaskDao{
+interface TaskDao <<interface>> {
     delete_Task(taskId) : void
     inset_Task(task) : void
     get_Task: LiveData<List<Task>>
 }
 
-class ProjectDaoRepository {
+class ProjectDaoRepository <<class>> {
     - projectDao : ProjectDao
-
+-- constructor--
     + ProjectDaoRepository(projectDao)
-
+..
     + get_All_Projects() : LiveData <Project[]>
 }
 
-class TaskDaoRepository {
+class TaskDaoRepository <<class>> {
     - taskDao : TaskDao
-
+-- constructor--
     + TaskDaoRepository(TaskDao)
-
+..
     + inset_Task(task)
     + delete_Task(taskId)
-    + get_Tasks() : LiveData<List<Task>>()
+    + get_Tasks() : LiveData<List<Task>>
 }
 
-abstract class SaveMyTripDataBase {
+abstract class SaveMyTripDataBase <<abstract>> {
     - {static} INSTANCE : SaveMyTripDataBase
     + {abstract} taskDao() : TaskDao
     + {abstract} projectDao() : ProjectDao
@@ -89,32 +99,32 @@ abstract class SaveMyTripDataBase {
     - {static} prepopulateDataBase() : Callback
 }
 
-class Injection {
+class Injection <<class>> {
     + {Static} provide_Task_Dao_Source(Context context)() : TaskDaoRepository
     + {Static} provide_Project_Dao_Source(context) : ProjectDaoRepository
     + {Static} provide_Executor() : Executor
     + {Static} provide_View_Model_Factory(context) : ViewModelFactory
 }
 
-class ViewModelFactory {
+class ViewModelFactory <<class>> {
     - taskDaoSource : TaskDaoRepository
     - projectDaoSource : ProjectDaoRepository
     - executor : Executor
-
+-- constructor--
     + ViewModelFactory(taskDaoSource,projectDaoSource,executor)
-
+..
     + create(@NonNull Class<T> modelClass) : T
 }
 
-class ItemViewModel {
+class ItemViewModel <<class>> {
     - taskDaoSource : TaskDaoRepository
     - projectDaoSource : ProjectDaoRepository
     - executor : Executor
     - current_task : LiveData <List<Task>>
     - projects : LiveData <Project[]>
-
+-- constructor--
     + ItemViewModel(taskDaoSource,projectDaoSource,executor)
-
+..
     + init() : void
     + get_All_Projects() : LiveData <Project[]>
     + inset_Task(task) : void
@@ -122,7 +132,7 @@ class ItemViewModel {
     + get_Tasks() : LiveData <List<Task>>
 }
 
-class MainActivity {
+class MainActivity <<class>> {
     - allProjects : Project[]
     - tasks : ArrayList<Task> : Integer
     - adapter : TasksAdapter
@@ -130,8 +140,9 @@ class MainActivity {
     - listTasks : RecyclerView
     - lblNoTasks : TextView
     - itemViewModel : ItemViewModel
-
+-- constructor--
     + onCreate(@Nullable Bundle savedInstanceState) : void
+..
     + onCreateOptionsMenu(menu) : Boolean
     + onOptionsItemSelected(item) : Boolean
     + onDeleteTask(task) : void
@@ -146,56 +157,59 @@ class MainActivity {
     - addTask(@NonNull Task task) : void
 }
 
-enum SortMethod {
+enum SortMethod <<enum>> {
      ALPHABETICAL
      ALPHABETICAL_INVERTED
      RECENT_FIRST
      OLD_FIRST
      NONE
 }
-class DialogAlert {
+
+class DialogAlert <<class>> {
     - dialog : AlertDialog
     - dialogEditText : EditText
     - dialogSpinner : Spinner
     - interface_alertDialog : Interface_alertDialog
     - allProjects : Project
-
-    + onAttach(@NonNull Context context) : void
+-- constructor--
     + onCreateDialog(@Nullable Bundle savedInstanceState) : Dialog
+..
+    + onAttach(@NonNull Context context) : void
     - onPositiveButtonClick(dialogInterface) : void
     + set_Project(Project [] allProjects)() : void
     - populateDialogSpinner() : void
 }
 
-interface Interface_alertDialog {
+
+interface Interface_alertDialog <<interface>> {
     + data_Callback_AlertDialog_To_Add_A_Task(taskName,taskProject)
 }
 
-class TasksAdapter {
+class TasksAdapter <<class>> {
     - tasks : List<Task>
     - deleteTaskListener : DeleteTaskListener
-
+-- constructor--
     + TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener)
-
+..
       updateTasks(@NonNull final List<Task> tasks) : void
-    + TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
+    + onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) : TaskViewHolder
     + onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) : void
     + getItemCount() : int
 }
 
-class TaskViewHolder {
+class TaskViewHolder <<class>> {
     - imgProject : AppCompatImageView
     - lblTaskName : TextView
     - lblProjectName : TextView
     - imgDelete : TextView
     - deleteTaskListener : DeleteTaskListener
-
+-- constructor--
     + TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener)
-
+..
     bind(task) : void
 }
 
-interface DeleteTaskListener {
+interface DeleteTaskListener <<interface>>{
     + onDeleteTask(task) : void
 }
 
@@ -219,6 +233,10 @@ MainActivity "1" --> "1" ViewModelFactory
 MainActivity "1" --> "1" Injection
 MainActivity "1" --> "1" DialogAlert
 MainActivity "1" --> "1" Project
+
+Injection  "1" --> "1" TaskDaoRepository
+Injection  "1" --> "1" ProjectDaoRepository
+Injection  "1" --> "1" ViewModelFactory
 
 ViewModelFactory "1" --> "1" TaskDaoRepository
 ViewModelFactory "1" --> "1" ProjectDaoRepository
